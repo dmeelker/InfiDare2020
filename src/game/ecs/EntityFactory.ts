@@ -123,6 +123,20 @@ export function createDuck(game: Game, location: Point, vector: Vector) {
     return entityId;
 }
 
+export function createBanana(game: Game, location: Point, vector: Vector) {
+    const entityId = game.state.ecs.allocateEntityId();
+    const image = game.images.get("banana");
+
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), false);
+    dimensions.center = new Point(image.width / 2, image.height / 2);
+
+    game.state.ecs.components.dimensionsComponents.add(dimensions);
+    game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
+    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, .4, 2));
+
+    return entityId;
+}
+
 export function createToiletPaper(game: Game, location: Point) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("toiletpaper");
