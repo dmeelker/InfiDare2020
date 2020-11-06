@@ -10,8 +10,8 @@ export function render(ecs: EntityComponentSystem, context: CanvasRenderingConte
 }
 
 function updateComponent(renderComponent: RenderComponent, dimensionsComponent: DimensionsComponent, context: CanvasRenderingContext2D) {
-    const location = dimensionsComponent.bounds.location;
-    const center = dimensionsComponent.center;
+    const location = dimensionsComponent.bounds.location.round();
+    const center = dimensionsComponent.center.round();
     const scale = dimensionsComponent.scale;
 
     if (dimensionsComponent.rotationInRadians == 0 && scale.x == 1 && scale.y == 1) {

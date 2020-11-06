@@ -27,6 +27,10 @@ export class Point {
     public distanceTo(other: Point): number {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
+
+    public round(): Point {
+        return new Point(Math.round(this.x), Math.round(this.y));
+    }
 }
 
 export interface Size {
