@@ -77,7 +77,9 @@ export class PlayScreen implements IScreen {
         createShoppingCart(this._game, new Point(300, 100));
 
         gameState.playerId = createPlayer(this._game, new Point(100, 100));
-        gameState.enemyId = createEnemy(this._game, new Point(200, 200))
+        gameState.enemies.push(createEnemy(this._game, new Point(200, 100)));
+        gameState.enemies.push(createEnemy(this._game, new Point(200, 200)));
+        gameState.enemies.push(createEnemy(this._game, new Point(200, 300)));
     }
 
     spawnPaper() {
