@@ -316,7 +316,7 @@ export class PlayScreen implements IScreen {
         }
 
         if (this._activeScenario != null) {
-            if (this._game.input.wasButtonPressedInFrame(Keys.Use) || this._game.mouse.Button1Down) {
+            if (this._game.input.wasButtonPressedInFrame(Keys.Use) || this._game.input.wasButtonPressedInFrame(Keys.Fire)) {
                 if (this._activeScenario.finished()) {
                     this._activeScenario = null;
                 }
