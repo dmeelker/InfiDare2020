@@ -109,10 +109,10 @@ export class Game {
     }
 
     private initializeKeyBindings() {
-        this.input.addKeyboardBinding(Keys.MoveUp, "ArrowUp");
-        this.input.addKeyboardBinding(Keys.MoveDown, "ArrowDown");
-        this.input.addKeyboardBinding(Keys.MoveLeft, "ArrowLeft");
-        this.input.addKeyboardBinding(Keys.MoveRight, "ArrowRight");
+        this.input.addKeyboardBinding(Keys.MoveUp, "KeyW");
+        this.input.addKeyboardBinding(Keys.MoveDown, "KeyS");
+        this.input.addKeyboardBinding(Keys.MoveLeft, "KeyA");
+        this.input.addKeyboardBinding(Keys.MoveRight, "KeyD");
         this.input.addKeyboardBinding(Keys.Fire, "Space");
 
         this.input.addGamepadBinding(Keys.MoveUp, 0, 12);

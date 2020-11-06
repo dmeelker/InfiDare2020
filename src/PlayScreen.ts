@@ -8,13 +8,15 @@ import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
+import { Point } from "./utilities/Trig";
+import { createPlayer } from "./game/ecs/EntityFactory";
 
 export class PlayScreen implements IScreen {
     private readonly _game: Game;
     private readonly _ui = new Ui();
     private readonly _uiInputProvider;
 
-    private _shipSpeed = 200;
+    private _playerSpeed = 200;
     private _fireTimer = new Timer(200);
 
     public constructor(game: Game) {
@@ -52,29 +54,25 @@ export class PlayScreen implements IScreen {
 
         gameState.ecs.clear();
         gameState.score.reset();
+        gameState.playerId = createPlayer(this._game, new Point(100, 100));
     }
 
     private handleInput(time: FrameTime) {
-        // const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
-        // let location = dimensions.bounds.location;
+        const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
+        let location = dimensions.bounds.location;
     
-        // if (this._game.input.isButtonDown(Keys.MoveLeft)) {
-        //     location.x -= time.calculateMovement(this._shipSpeed);
-        // }
-        // if (this._game.input.isButtonDown(Keys.MoveRight)) {
-        //     location.x += time.calculateMovement(this._shipSpeed);
-        // }
-        // if (this._game.input.isButtonDown(Keys.MoveUp)) {
-        //     location.y -= time.calculateMovement(this._shipSpeed);
-        // }
-        // if (this._game.input.isButtonDown(Keys.MoveDown)) {
-        //     location.y += time.calculateMovement(this._shipSpeed);
-        // }
-    
-        // if(location.x < 0) location.x = 0;
-        // if(location.x + dimensions.bounds.size.width > this._game.view.size.size.width) location.x = this._game.view.size.size.width - dimensions.bounds.size.width;
-        // if(location.y < 0) location.y = 0;
-        // if(location.y + dimensions.bounds.size.height > this._game.view.size.size.height) location.y = this._game.view.size.size.height - dimensions.bounds.size.height;
+        if (this._game.input.isButtonDown(Keys.MoveLeft)) {
+            location.x -= time.calculateMovement(this._playerSpeed);
+        }
+        if (this._game.input.isButtonDown(Keys.MoveRight)) {
+            location.x += time.calculateMovement(this._playerSpeed);
+        }
+        if (this._game.input.isButtonDown(Keys.MoveUp)) {
+            location.y -= time.calculateMovement(this._playerSpeed);
+        }
+        if (this._game.input.isButtonDown(Keys.MoveDown)) {
+            location.y += time.calculateMovement(this._playerSpeed);
+        }
     }
 
     private checkPlayerDestroyed() {
