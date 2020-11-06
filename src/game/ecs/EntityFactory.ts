@@ -8,11 +8,8 @@ import { CarryableComponent } from "./components/CarryableComponent";
 import { LivingComponent } from "./components/LivingComponent";
 import { EnemyComponent } from "./components/EnemyComponent";
 import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
-<<<<<<< HEAD
 import { AudioComponent } from "./components/AudioComponent";
-=======
 import { FallingObjectComponent } from "./components/FallingObjectComponent";
->>>>>>> d732df955c068647fd36e721a02a6ddc40f1db34
 
 const PLAYER_HEALTH: number = 100;
 const ENEMY_HEALTH: number = 4;
