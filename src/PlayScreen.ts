@@ -16,7 +16,7 @@ import * as FallingObjectShadowRenderer from "./game/ecs/systems/FallingObjectSh
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createRamEnemy } from "./game/ecs/EntityFactory";
+import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createRamEnemy, createDuck } from "./game/ecs/EntityFactory";
 import { randomArrayElement, randomInt } from "./utilities/Random";
 import * as Events from "./Events/Events";
 import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
@@ -307,7 +307,7 @@ export class PlayScreen implements IScreen {
             vector = vector.toUnit().multiplyScalar(200);
 
             let spawners = [
-                createApple, createBeerCan, createChicken
+                createApple, createBeerCan, createChicken, createDuck
             ];
 
             var spawner = randomArrayElement(spawners);

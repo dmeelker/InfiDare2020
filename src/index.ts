@@ -107,6 +107,7 @@ export class Game {
         await this.images.load("box", "gfx/box.png");
         await this.images.load("apple", "gfx/apple.png");
         await this.images.load("beercan", "gfx/beercan.png");
+        await this.images.load("ducky", "gfx/ducky.png");
         await this.images.load("toiletpaper", "gfx/tp.png");
         await this.images.load("chicken", "gfx/chicken.png");
         await this.images.load("shoppingcart", "gfx/cart.png");
