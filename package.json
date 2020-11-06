@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack --mode production && cp index.html dist/ && cp -R gfx/ dist/"
+    "build": "npx webpack --mode production && cp index.html dist/ && cp -R gfx/ dist/ && cp -R levels/ dist/"
   },
   "author": "",
   "license": "ISC",
