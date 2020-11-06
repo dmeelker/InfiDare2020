@@ -109,13 +109,13 @@ export class PlayScreen implements IScreen {
     }
     private spawnBoxes() {
         const count = Math.min(this._waveNumber, 3);
-        for(let i=0; i<count; i++) {
+        for (let i = 0; i < count; i++) {
             createFallingBox(this._game, this.randomLocation());
         }
     }
 
     private randomLocation(): Point {
-        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height));
+        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
     }
 
     handleEnemyKilled() {
@@ -129,7 +129,7 @@ export class PlayScreen implements IScreen {
     }
 
     render(renderContext: CanvasRenderingContext2D): void {
-        this.drawFloor(renderContext);
+        this._game.level.drawMap(this._game.view.context);
         FallingObjectShadowRenderer.render(this._game, renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         AudioSystem.render(this._game);
@@ -165,21 +165,10 @@ export class PlayScreen implements IScreen {
         this._ui.frameDone();
     }
 
-    private drawFloor(renderContext: CanvasRenderingContext2D) {
-        let image = this._game.images.get("floor1");
-        const viewSize = this._game.view.size
-        const blocksX = viewSize.width / image.width;
-        const blocksY = viewSize.width / image.height;
-
-        for (let x = 0; x < blocksX; x++) {
-            for (let y = 0; y < blocksY; y++) {
-                renderContext.drawImage(image, x * image.width, y * image.height);
-            }
-        }
-    }
 
     private resetGame() {
         let gameState = this._game.state;
+
 
         this.switchState(GameState.Defending);
         gameState.ecs.clear();
@@ -196,7 +185,7 @@ export class PlayScreen implements IScreen {
 
     spawnWave() {
         for (let i = 0; i < 2 * (this._waveNumber + 2); i++) {
-            createEnemy(this._game, new Point(25 * i, 250));
+            createEnemy(this._game, new Point(randomInt(1, 400), randomInt(200, 300)));
         }
         this._waveNumber++;
     }

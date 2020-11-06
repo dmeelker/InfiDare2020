@@ -1,38 +1,39 @@
-import { Images } from "./utilities/Images";
-import { FrameCounter } from "./utilities/FrameCounter";
+import {Images} from "./utilities/Images";
+import {FrameCounter} from "./utilities/FrameCounter";
 import PixelFontSmall from "./fonts/PixelFontSmall"
 import PixelFontMedium from "./fonts/PixelFontMedium"
-import { Point, Rectangle } from "./utilities/Trig";
-import { FrameTime } from "./utilities/FrameTime";
-import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
-import { AnimationDefinition, AnimationRepository } from "./utilities/Animation";
-import { Font, prepareFont } from "./utilities/Font";
-import { ScreenManager } from "./utilities/ScreenManager";
-import { IntroScreen } from "./IntroScreen";
-import { PlayScreen } from "./PlayScreen";
-import { GameState } from "./game/GameState";
-import { Keyboard } from "./utilities/Keyboard";
-import { InputProvider, Keys } from "./utilities/InputProvider";
-import { GamepadPoller } from "./utilities/GamepadPoller";
-import { Mouse } from "./utilities/Mouse";
-import { MessageBus } from "./Events/MessageBus";
+import {Point, Rectangle} from "./utilities/Trig";
+import {FrameTime} from "./utilities/FrameTime";
+import {SpriteSheetLoader} from "./utilities/SpriteSheetLoader";
+import {AnimationDefinition, AnimationRepository} from "./utilities/Animation";
+import {Font, prepareFont} from "./utilities/Font";
+import {ScreenManager} from "./utilities/ScreenManager";
+import {IntroScreen} from "./IntroScreen";
+import {PlayScreen} from "./PlayScreen";
+import {GameState} from "./game/GameState";
+import {Keyboard} from "./utilities/Keyboard";
+import {InputProvider, Keys} from "./utilities/InputProvider";
+import {GamepadPoller} from "./utilities/GamepadPoller";
+import {Mouse} from "./utilities/Mouse";
+import {MessageBus} from "./Events/MessageBus";
+import {Level} from "./utilities/LevelLoader/Level";
 
 export class ViewInfo {
-    public canvas: HTMLCanvasElement;
-    public context: CanvasRenderingContext2D;
-    public size: Rectangle;
-    public scale: number = 2;
+  public canvas: HTMLCanvasElement;
+  public context: CanvasRenderingContext2D;
+  public size: Rectangle;
+  public scale: number = 2;
 
-    public levelToScreenCoordinates(levelCoordinates: Point): Point {
-        return new Point(
-            this.size.width * (levelCoordinates.x / 100),
-            this.size.height * (levelCoordinates.y / 100))
-    }
+  public levelToScreenCoordinates(levelCoordinates: Point): Point {
+    return new Point(
+      this.size.width * (levelCoordinates.x / 100),
+      this.size.height * (levelCoordinates.y / 100))
+  }
 }
 
 export class Fonts {
-    public small: Font;
-    public medium: Font;
+  public small: Font;
+  public medium: Font;
 }
 
 export class Game {
@@ -51,6 +52,8 @@ export class Game {
     public readonly gamepadPoller = new GamepadPoller();
     public readonly input = new InputProvider(this.keyboard, this.gamepadPoller);
     public readonly messageBus = new MessageBus();
+
+    public level: Level;
 
     public introScreen: IntroScreen;
     public playScreen: PlayScreen;
@@ -74,6 +77,9 @@ export class Game {
         this.loadFonts();
         this.intializeScreens();
         this.initializeKeyBindings();
+
+        this.level = new Level(this.view.canvas);
+        await this.level.loadLevel('level01.json');
     }
 
     private setupView() {
