@@ -118,7 +118,7 @@ export function createFallingBox(game: Game, location: Point) {
     const image = game.images.get("box");
     const targetLocation = new Point(location.x + (image.width / 2), location.y + (image.height / 2));
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height));
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height), 5, true);
     dimensions.hasCollision = false;
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
