@@ -1,4 +1,4 @@
-import { degreesToRadians, Point, Rectangle } from "../../../utilities/Trig";
+import { degreesToRadians, Point, Rectangle, Vector } from "../../../utilities/Trig";
 import { Component, EntityId } from "../EntityComponentSystem";
 
 export class DimensionsComponent extends Component {
@@ -11,6 +11,7 @@ export class DimensionsComponent extends Component {
     constructor(entityId: EntityId, bounds: Rectangle) {
         super(entityId);
         this.bounds = bounds;
+        this.center = new Point(bounds.width / 2, bounds.height / 2);
     }
 
     public get rotationInDegrees(): number {
@@ -28,5 +29,9 @@ export class DimensionsComponent extends Component {
 
     public get centerLocation(): Point {
         return this.bounds.location.add(this.center);
+    }
+
+    public move(translation: Vector) {
+        this.bounds.location = this.bounds.location.add(translation);
     }
 }

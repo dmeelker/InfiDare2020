@@ -16,8 +16,12 @@ export class Point {
         return new Vector(this.x, this.y);
     }
 
-    public add(other: Point): Point {
+    public add(other: Point | Vector): Point {
         return new Point(this.x + other.x, this.y + other.y);
+    }
+
+    public subtract(other: Point): Vector {
+        return new Vector(this.x - other.x, this.y - other.y);
     }
 
     public distanceTo(other: Point): number {
@@ -56,7 +60,7 @@ export class Rectangle {
 
     constructor(x: number, y: number, width: number, height: number) {
         this.location = new Point(x, y);
-        this.size = {width, height};
+        this.size = { width, height };
     }
 
     public overlaps(other: Rectangle): boolean {
@@ -131,13 +135,13 @@ export class Vector {
             v1.y + ((v2.y - v1.y) * amount));
     }
 
-    static fromRadianAngle(radians: number) : Vector {
+    static fromRadianAngle(radians: number): Vector {
         return new Vector(
             Math.cos(radians),
             Math.sin(radians));
     }
 
-    static fromDegreeAngle(degrees: number) : Vector {
+    static fromDegreeAngle(degrees: number): Vector {
         return this.fromRadianAngle(degreesToRadians(degrees));
     }
 
@@ -150,18 +154,18 @@ export class Vector {
     }
 }
 
-export function degreesToRadians(degrees: number) : number {
+export function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
 }
 
-export function radiansToDegrees(radians: number) : number {
+export function radiansToDegrees(radians: number): number {
     return radians * (180 / Math.PI);
 }
 
-export function normalizeDegrees(degrees: number) : number {
+export function normalizeDegrees(degrees: number): number {
     degrees = degrees % 360;
 
-    if(degrees < 0) {
+    if (degrees < 0) {
         degrees += 360;
     }
 

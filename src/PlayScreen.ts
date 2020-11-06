@@ -6,10 +6,11 @@ import * as RenderSystem from "./game/ecs/systems/RenderSystem";
 import * as ProjectileSystem from "./game/ecs/systems/ProjectileSystem";
 import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
+import * as AISystem from "./game/ecs/systems/AISystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createBeerCan, createChicken, createPlayer, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
+import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
 import { randomArrayElement } from "./utilities/Random";
 
 export class PlayScreen implements IScreen {
@@ -38,6 +39,7 @@ export class PlayScreen implements IScreen {
         this.handleInput(time);
 
         ProjectileSystem.update(this._game);
+        AISystem.update(this._game);
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
         this._game.state.ecs.removeDisposedEntities();
@@ -48,7 +50,7 @@ export class PlayScreen implements IScreen {
     render(renderContext: CanvasRenderingContext2D): void {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
-        this._ui.frameDone();   
+        this._ui.frameDone();
     }
 
     private drawFloor(renderContext: CanvasRenderingContext2D) {
@@ -57,10 +59,10 @@ export class PlayScreen implements IScreen {
         const blocksX = viewSize.width / image.width;
         const blocksY = viewSize.width / image.height;
 
-        for(let x=0; x<blocksX; x++) {
-            for(let y=0; y<blocksY; y++) {
+        for (let x = 0; x < blocksX; x++) {
+            for (let y = 0; y < blocksY; y++) {
                 renderContext.drawImage(image, x * image.width, y * image.height);
-            }   
+            }
         }
     }
 
@@ -75,11 +77,12 @@ export class PlayScreen implements IScreen {
         createShoppingCart(this._game, new Point(300, 100));
 
         gameState.playerId = createPlayer(this._game, new Point(100, 100));
+        gameState.enemyId = createEnemy(this._game, new Point(200, 200))
     }
 
     spawnPaper() {
-        for(let x=0; x<5; x++) {
-            for(let y=0; y<3; y++) {
+        for (let x = 0; x < 5; x++) {
+            for (let y = 0; y < 3; y++) {
                 let location = new Point((x * 30) + 150, y * 30);
 
                 createToiletPaper(this._game, location);
@@ -90,7 +93,7 @@ export class PlayScreen implements IScreen {
     private handleInput(time: FrameTime) {
         const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
         let location = dimensions.bounds.location;
-    
+
         if (this._game.input.isButtonDown(Keys.MoveLeft)) {
             location.x -= time.calculateMovement(this._playerSpeed);
         }
@@ -104,7 +107,7 @@ export class PlayScreen implements IScreen {
             location.y += time.calculateMovement(this._playerSpeed);
         }
 
-        if((this._game.input.isButtonDown(Keys.Fire) || this._game.mouse.Button1Down) && this._fireTimer.update(time.currentTime)) {
+        if ((this._game.input.isButtonDown(Keys.Fire) || this._game.mouse.Button1Down) && this._fireTimer.update(time.currentTime)) {
             let vector = this._game.mouse.Location.toVector().subtract(dimensions.centerLocation.toVector());
             vector = vector.toUnit().multiplyScalar(200);
 
@@ -119,8 +122,8 @@ export class PlayScreen implements IScreen {
 
     private checkPlayerDestroyed() {
         const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
-    
-        if(dimensions == undefined) {
+
+        if (dimensions == undefined) {
             this.resetGame();
         }
     }
