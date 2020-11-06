@@ -6,6 +6,8 @@ import { LivingComponent } from "../components/LivingComponent";
 import { EntityId } from "../EntityComponentSystem";
 import * as CarrierHelper from "./../utilities/CarrierHelper"
 import { Events, EnemyKilledEventArgs } from "../../../Events/Events";
+import { chance } from "../../../utilities/Random";
+import { createShoppingCart } from "../EntityFactory";
 
 export function update(game: Game) {
     for (let projectileComponent of game.state.ecs.components.projectileComponents.all) {
@@ -33,6 +35,10 @@ function checkForCollisions(game: Game, projectileComponent: ProjectileComponent
                 game.messageBus.raise(Events.EnemyKilled, new EnemyKilledEventArgs());
                 dropCarriedObject(game, enemy.entityId);
                 game.state.ecs.disposeEntity(enemy.entityId);
+
+                if (chance(15)) {
+                    createShoppingCart(game, enemyDimensions.bounds.location);
+                }
             }
             break;
         }

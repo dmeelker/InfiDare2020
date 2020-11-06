@@ -10,7 +10,7 @@ import { EnemyComponent } from "./components/EnemyComponent";
 import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
 
 const PLAYER_HEALTH: number = 100;
-const ENEMY_HEALTH: number = 5;
+const ENEMY_HEALTH: number = 4;
 
 export function createPlayer(game: Game, location: Point,): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
