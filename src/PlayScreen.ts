@@ -133,7 +133,6 @@ export class PlayScreen implements IScreen {
             this._firstBlood = false;
         }
         var sound = randomInt(0, 3);
-        console.log(sound);
         this._game.state.ecs.components.audioComponents.add(new AudioComponent(this._game.state.ecs.allocateEntityId(), "zombiedeath" + sound + ".mp3"))
     }
 
@@ -214,10 +213,10 @@ export class PlayScreen implements IScreen {
 
     private spawnWave() {
         const spawnArea = new Rectangle(
-            this._game.view.size.width - 100, 100,
-            0, this._game.view.size.height
+            this._game.view.size.width - 100, 25,
+            0, this._game.view.size.height - 25
         );
-        
+
         this._waveNumber++;
 
         let num_zombies = 2 * this._waveNumber;
