@@ -4,10 +4,11 @@ import { Timer } from "./utilities/Timer";
 import { DomUiEventProvider, Ui } from "./utilities/Ui";
 import * as RenderSystem from "./game/ecs/systems/RenderSystem";
 import * as ProjectileSystem from "./game/ecs/systems/ProjectileSystem";
-import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
-import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
-import * as AISystem from "./game/ecs/systems/AISystem"
-import * as CarrierRenderSystem from "./game/ecs/systems/CarrierRenderSystem"
+import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem";
+import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem";
+import * as AISystem from "./game/ecs/systems/AISystem";
+import * as CarrierRenderSystem from "./game/ecs/systems/CarrierRenderSystem";
+import * as AudioSystem from "./game/ecs/systems/AudioSystem";
 import * as CarrierHelper from "./game/ecs/utilities/CarrierHelper"
 import * as DialogSystem from "./game/ecs/systems/DialogSystem";
 import { Game } from ".";
@@ -112,6 +113,7 @@ export class PlayScreen implements IScreen {
     render(renderContext: CanvasRenderingContext2D): void {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
+        AudioSystem.render(this._game);
         CarrierRenderSystem.render(this._game, renderContext);
 
         if (this._activeScenario != null) {
