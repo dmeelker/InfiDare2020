@@ -10,26 +10,43 @@ export function update(game: Game) {
     for (let projectileComponent of game.state.ecs.components.projectileComponents.all) {
         const projectile = game.state.ecs.components.dimensionsComponents.get(projectileComponent.entityId);
 
-        updateComponent(game.time, projectileComponent, projectile);
-        for (let enemy of game.state.ecs.components.enemyComponents.all) {
-            const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
-            if (enemyDimensions.bounds.overlaps(projectile.bounds)) {
-                game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
-                enemyDimensions.hp -= 1;
-                if (enemyDimensions.hp <= 0) {
-                    dropCarriedObject(game, enemy.entityId);
-                    game.state.ecs.disposeEntity(enemy.entityId);
-                }
-                break;
-            }
-        }
+        move(game.time, projectileComponent, projectile);
+        checkForCollisions(game, projectileComponent, projectile);
+
+        // for (let enemy of game.state.ecs.components.enemyComponents.all) {
+        //     const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
+        //     if (enemyDimensions.bounds.overlaps(projectile.bounds)) {
+        //         game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
+        //         enemyDimensions.hp -= 1;
+        //         if (enemyDimensions.hp <= 0) {
+        //             dropCarriedObject(game, enemy.entityId);
+        //             game.state.ecs.disposeEntity(enemy.entityId);
+        //         }
+        //         break;
+        //     }
+        // }
     }
 }
 
-function updateComponent(time: FrameTime, projectileComponent: ProjectileComponent, dimensionsComponent: DimensionsComponent) {
+function move(time: FrameTime, projectileComponent: ProjectileComponent, dimensionsComponent: DimensionsComponent) {
     dimensionsComponent.bounds.location.x += time.calculateMovement(projectileComponent.vector.x);
     dimensionsComponent.bounds.location.y += time.calculateMovement(projectileComponent.vector.y);
     dimensionsComponent.rotationInDegrees = (time.currentTime - projectileComponent.creationTime) * projectileComponent.rotationSpeed;
+}
+
+function checkForCollisions(game: Game, projectileComponent: ProjectileComponent, projectile: DimensionsComponent) {
+    for (let enemy of game.state.ecs.components.enemyComponents.all) {
+        const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
+        if (enemyDimensions.bounds.overlaps(projectile.bounds)) {
+            game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
+            enemyDimensions.hp -= 1;
+            if (enemyDimensions.hp <= 0) {
+                dropCarriedObject(game, enemy.entityId);
+                game.state.ecs.disposeEntity(enemy.entityId);
+            }
+            break;
+        }
+    }
 }
 
 function dropCarriedObject(game: Game, entityId: EntityId) {
