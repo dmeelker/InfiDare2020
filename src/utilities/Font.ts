@@ -24,7 +24,6 @@ export class Font {
     public Image: ImageBitmap;
 
     public render(context: CanvasRenderingContext2D, location: Point, text: string) {
-        
         for(let charIndex=0; charIndex<text.length; charIndex++) {
             let stringChar = text.charAt(charIndex);
             let fontChar = this.Characters.get(stringChar);
@@ -37,6 +36,15 @@ export class Font {
     
             location = location.add(new Point(fontChar.XAdvance, 0));
         }
+    }
+
+    public renderCentered(context: CanvasRenderingContext2D, location: Point, text: string) {
+        const size = this.calculateSize(text);
+        location = new Point(
+            Math.round(location.x - size.width / 2),
+            Math.round(location.y - size.height / 2));
+
+        this.render(context, location, text);
     }
 
     public calculateSize(text: string): Size {
