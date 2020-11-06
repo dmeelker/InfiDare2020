@@ -8,8 +8,8 @@ import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
-import { Point } from "./utilities/Trig";
-import { createPlayer } from "./game/ecs/EntityFactory";
+import { Point, Vector } from "./utilities/Trig";
+import { createApple, createPlayer } from "./game/ecs/EntityFactory";
 
 export class PlayScreen implements IScreen {
     private readonly _game: Game;
@@ -86,6 +86,10 @@ export class PlayScreen implements IScreen {
         }
         if (this._game.input.isButtonDown(Keys.MoveDown)) {
             location.y += time.calculateMovement(this._playerSpeed);
+        }
+
+        if(this._game.input.isButtonDown(Keys.Fire) && this._fireTimer.update(time.currentTime)) {
+            createApple(this._game, dimensions.centerLocation, new Vector(0, 1).multiplyScalar(150));
         }
     }
 
