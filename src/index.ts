@@ -73,13 +73,14 @@ export class Game {
         this.setupView();
         this.mouse = new Mouse(this.view.canvas, this.view.scale);
         await this.loadImages();
+        this.level = new Level(this.view.canvas);
+        await this.level.loadLevel('level01.json');
         this.setupAnimations();
         this.loadFonts();
         this.intializeScreens();
         this.initializeKeyBindings();
 
-        this.level = new Level(this.view.canvas);
-        await this.level.loadLevel('level01.json');
+
     }
 
     private setupView() {

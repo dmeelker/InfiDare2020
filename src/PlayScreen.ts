@@ -177,18 +177,19 @@ export class PlayScreen implements IScreen {
     private resetGame() {
         let gameState = this._game.state;
 
-
         this.switchState(GameState.Defending);
         this._waveNumber = 0;
         gameState.ecs.clear();
         gameState.score.reset();
+        this._game.level.addWallsAndStatics('solids', gameState.ecs);
+
         this.spawnBoxes();
         this.spawnPaper();
 
         createShoppingCart(this._game, new Point(50, 200));
         createShoppingCart(this._game, new Point(300, 100));
 
-        gameState.playerId = createPlayer(this._game, new Point(100, 100));
+        gameState.playerId = createPlayer(this._game, new Point(200, 225));
         this.spawnWave();
     }
 
