@@ -3,6 +3,8 @@ import { ProjectileComponent } from "../components/ProjectileComponent";
 import { FrameTime } from "../../../utilities/FrameTime";
 import { Game } from "../../..";
 import { LivingComponent } from "../components/LivingComponent";
+import { EntityId } from "../EntityComponentSystem";
+import * as CarrierHelper from "./../utilities/CarrierHelper"
 
 export function update(game: Game) {
     for (let projectileComponent of game.state.ecs.components.projectileComponents.all) {
@@ -15,6 +17,7 @@ export function update(game: Game) {
                 game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
                 enemyDimensions.hp -= 1;
                 if (enemyDimensions.hp <= 0) {
+                    dropCarriedObject(game, enemy.entityId);
                     game.state.ecs.disposeEntity(enemy.entityId);
                 }
                 break;
@@ -27,4 +30,10 @@ function updateComponent(time: FrameTime, projectileComponent: ProjectileCompone
     dimensionsComponent.bounds.location.x += time.calculateMovement(projectileComponent.vector.x);
     dimensionsComponent.bounds.location.y += time.calculateMovement(projectileComponent.vector.y);
     dimensionsComponent.rotationInDegrees = (time.currentTime - projectileComponent.creationTime) * projectileComponent.rotationSpeed;
+}
+
+function dropCarriedObject(game: Game, entityId: EntityId) {
+    if(CarrierHelper.isCarryingObject(game, entityId)) {
+        CarrierHelper.dropCarriedObject(game, entityId);
+    }
 }

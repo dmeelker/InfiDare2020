@@ -51,3 +51,8 @@ export function dropCarriedObject(game: Game, carrierEntityId: EntityId) {
 
     ecs.components.carrierComponents.remove(game.state.playerId);
 }
+
+export function isCarryingObject(game: Game, carrierEntityId: EntityId): boolean {
+    const carrier = game.state.ecs.components.carrierComponents.get(carrierEntityId);
+    return carrier != null;
+}

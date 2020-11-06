@@ -7,6 +7,7 @@ import { EntityId } from "./EntityComponentSystem";
 import { CarryableComponent } from "./components/CarryableComponent";
 import { LivingComponent } from "./components/LivingComponent";
 import { EnemyComponent } from "./components/EnemyComponent";
+import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
 
 const PLAYER_HEALTH: number = 100;
 const ENEMY_HEALTH: number = 5;
@@ -87,6 +88,7 @@ export function createToiletPaper(game: Game, location: Point) {
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
+    game.state.ecs.components.enemyTargetComponents.add(new EnemyTargetComponent(entityId));
 
     return entityId;
 }

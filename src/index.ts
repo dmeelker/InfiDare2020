@@ -117,7 +117,7 @@ export class Game {
     private intializeScreens() {
         this.introScreen = new IntroScreen(this);
         this.playScreen = new PlayScreen(this);
-        this.screenManager = new ScreenManager(this.introScreen);
+        this.screenManager = new ScreenManager(this.playScreen);
     }
 
     private initializeKeyBindings() {

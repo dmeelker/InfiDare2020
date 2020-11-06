@@ -5,6 +5,8 @@ import { ProjectileComponent } from "./components/ProjectileComponent";
 import { CarryableComponent } from "./components/CarryableComponent";
 import { CarrierComponent } from "./components/CarrierComponent";
 import { EnemyComponent } from "./components/EnemyComponent";
+import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
+import { textChangeRangeIsUnchanged } from "typescript";
 
 export type EntityId = number;
 
@@ -52,7 +54,7 @@ export class ComponentStore {
     public readonly carrierComponents = new ComponentList<CarrierComponent>();
     public readonly carryableComponents = new ComponentList<CarryableComponent>();
     public readonly enemyComponents = new ComponentList<EnemyComponent>();
-    
+    public readonly enemyTargetComponents = new ComponentList<EnemyTargetComponent>();
 
     private readonly _all = [
         this.renderComponents,
@@ -61,7 +63,8 @@ export class ComponentStore {
         this.timedDestroyComponents,
         this.carrierComponents,
         this.carryableComponents,
-        this.enemyComponents];
+        this.enemyComponents,
+        this.enemyTargetComponents];
 
     public removeComponentsForEntity(entityId: EntityId) {
         this._all.forEach(store => store.remove(entityId));
@@ -132,6 +135,10 @@ export class EntityComponentSystem {
             this.freeEntityId(id);
             this.components.removeComponentsForEntity(id);
         }
+    }
+
+    public entityExists(id: EntityId): boolean {
+        return this.entities.has(id);
     }
 
     public clear() {
