@@ -9,7 +9,8 @@ export enum EnemyState {
 
 export enum EnemyBehaviour {
     Normal,
-    Ram
+    Ram,
+    Spawner
 }
 
 export class EnemyComponent extends Component {
@@ -26,7 +27,7 @@ export class EnemyComponent extends Component {
         this.behaviour = behaviour;
         this.baseSpeed = randomInt(25, 75);
     }
-    
+
     public getSpeed() {
         return this.baseSpeed + (this.state == EnemyState.MovingToPos ? 15 : 0);
     }

@@ -16,16 +16,13 @@ import * as FallingObjectShadowRenderer from "./game/ecs/systems/FallingObjectSh
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createRamEnemy, createDuck, createBanana } from "./game/ecs/EntityFactory";
+import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createBoss, createDuck, createRamEnemy, createBanana } from "./game/ecs/EntityFactory";
 import { randomArrayElement, randomInt } from "./utilities/Random";
 import * as Events from "./Events/Events";
-import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
-import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
 import { GameOver } from "./Scenarios/GameStart";
 import { AudioComponent } from "./game/ecs/components/AudioComponent";
 import { Direction } from "./game/ecs/components/RenderComponent";
-import { EnemyBehaviour } from "./game/ecs/components/EnemyComponent";
 import { EntityId } from "./game/ecs/EntityComponentSystem";
 
 enum GameState {
@@ -34,11 +31,10 @@ enum GameState {
     Lost
 }
 
-type EnemyFactory =  (game: Game, location: Point) => EntityId;
+type EnemyFactory = (game: Game, location: Point) => EntityId;
 
 class EnemyFactoryWithWeight {
-    constructor(public factory: EnemyFactory, public weight: number)
-    {
+    constructor(public factory: EnemyFactory, public weight: number) {
 
     }
 }
@@ -217,23 +213,32 @@ export class PlayScreen implements IScreen {
     }
 
     private spawnWave() {
-        for (let i = 0; i < 2 * (this._waveNumber + 2); i++) {
+        this._waveNumber++;
+
+        let num_zombies = 2 * this._waveNumber;
+        if (this._waveNumber % 5 === 0) {
+            num_zombies /= 2;
+            for (let i = 0; i < this._waveNumber / 5; i++) {
+                createBoss(this._game, new Point(randomInt(1, 400), randomInt(500, 600)));
+            }
+        }
+
+        for (let i = 0; i < num_zombies; i++) {
             const spawner = this.getRandomEnemyFactory();
             spawner(this._game, new Point(randomInt(1, 400), randomInt(550, 650)));
         }
-        this._waveNumber++;
     }
 
     private getRandomEnemyFactory(): EnemyFactory {
         const availableFactories = this.getAvailableEnemyFactories();
-        const totalWeight = availableFactories.map(f => f.weight).reduce((v1,v2) => v1 + v2);
+        const totalWeight = availableFactories.map(f => f.weight).reduce((v1, v2) => v1 + v2);
         const random = randomInt(0, totalWeight);
         let accumulator = 0;
-        
-        for(let factory of availableFactories) {
+
+        for (let factory of availableFactories) {
             accumulator += factory.weight;
 
-            if(random < accumulator) {
+            if (random < accumulator) {
                 return factory.factory;
             }
         }
@@ -246,10 +251,10 @@ export class PlayScreen implements IScreen {
             new EnemyFactoryWithWeight(createEnemy, 100)
         ];
 
-        if(this._waveNumber > 5) {
+        if (this._waveNumber > 5) {
             factories.push(new EnemyFactoryWithWeight(createRamEnemy, 10));
         }
-        
+
         return factories;
     }
 
