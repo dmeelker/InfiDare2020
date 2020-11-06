@@ -59,7 +59,7 @@ export class PlayScreen implements IScreen {
     render(renderContext: CanvasRenderingContext2D): void {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
-        CarrierRenderSystem.render(this._game.state.ecs, renderContext);
+        CarrierRenderSystem.render(this._game, renderContext);
         this._ui.frameDone();
     }
 
@@ -161,7 +161,7 @@ export class PlayScreen implements IScreen {
             }
         }
     }
-    
+
     private checkPlayerDestroyed() {
         const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
 
