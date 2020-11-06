@@ -199,8 +199,8 @@ export class PlayScreen implements IScreen {
         this._waveNumber = 0;
         gameState.ecs.clear();
         gameState.score.reset();
-        this._game.level.addWallsAndStatics('solids', gameState.ecs);
-        // this._game.level.addWallsAndStatics('solids', gameState.ecs, this._game.images);
+        //this._game.level.addWallsAndStatics('solids', gameState.ecs);
+        this._game.level.addWallsAndStatics('solids', gameState.ecs, this._game.images);
 
         this.spawnBoxes();
         this.spawnPaper();
