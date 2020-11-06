@@ -7,11 +7,14 @@ import * as ProjectileSystem from "./game/ecs/systems/ProjectileSystem";
 import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import * as AISystem from "./game/ecs/systems/AISystem"
+import * as CarrierRenderSystem from "./game/ecs/systems/CarrierRenderSystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
 import { randomArrayElement } from "./utilities/Random";
+import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
+import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 
 export class PlayScreen implements IScreen {
     private readonly _game: Game;
@@ -55,6 +58,7 @@ export class PlayScreen implements IScreen {
     render(renderContext: CanvasRenderingContext2D): void {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
+        CarrierRenderSystem.render(this._game.state.ecs, renderContext);
         this._ui.frameDone();
     }
 
@@ -127,6 +131,10 @@ export class PlayScreen implements IScreen {
             player.bounds.location = player.bounds.location.add(velocity);
         }
 
+        if (this._game.input.wasButtonPressedInFrame(Keys.Use)) {
+            this.interact();
+        }
+
         if ((this._game.input.isButtonDown(Keys.Fire) || this._game.mouse.Button1Down) && this._fireTimer.update(time.currentTime)) {
             let vector = this._game.mouse.Location.toVector().subtract(player.centerLocation.toVector());
             vector = vector.toUnit().multiplyScalar(200);
@@ -138,6 +146,57 @@ export class PlayScreen implements IScreen {
             var spawner = randomArrayElement(spawners);
             spawner(this._game, player.centerLocation, vector);
         }
+    }
+
+    private interact() {
+        const state = this._game.state;
+        const ecs = state.ecs;
+
+        const playerDimensions = ecs.components.dimensionsComponents.get(this._game.state.playerId); 
+        const currentCarrier = ecs.components.carrierComponents.get(this._game.state.playerId);
+        
+        if(currentCarrier) {
+            ecs.components.import(currentCarrier.carriedEntityComponents);
+            const carryableDimensions = ecs.components.dimensionsComponents.get(currentCarrier.carriedEntityId);
+            const carryableHalfSize = carryableDimensions.bounds.halfSize();
+
+            carryableDimensions.bounds.location = new Point(playerDimensions.centerLocation.x - carryableHalfSize.width, playerDimensions.bounds.y + playerDimensions.bounds.height); 
+
+            ecs.components.carrierComponents.remove(state.playerId);
+        } else {
+            const carryable = this.findNearestCarryable();
+            if(carryable) {
+                if(!ecs.components.carrierComponents.get(state.playerId)) {
+                    const carryableImage = ecs.components.renderComponents.get(carryable.entityId);
+
+                    const carryableComponents = ecs.components.exportSingleEntity(carryable.entityId);
+                    ecs.components.removeComponentsForEntity(carryable.entityId);
+
+                    let carrier = new CarrierComponent(state.playerId);
+                    carrier.carriedEntityId = carryable.entityId;
+                    carrier.carriedEntityComponents = carryableComponents;
+                    carrier.image = carryableImage.image.getImage();
+
+                    ecs.components.carrierComponents.add(carrier);
+                }
+            }
+        }
+    }
+
+    private findNearestCarryable(): CarryableComponent {
+        const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
+
+        const carryableComponents = this._game.state.ecs.components.carryableComponents.all;
+
+        for(let carryable of carryableComponents) {
+            var carryableDimensions = this._game.state.ecs.components.dimensionsComponents.get(carryable.entityId);
+
+            if(dimensions.bounds.overlaps(carryableDimensions.bounds)) {
+                return carryable;
+            }
+        }
+
+        return null;
     }
 
     private checkPlayerDestroyed() {
