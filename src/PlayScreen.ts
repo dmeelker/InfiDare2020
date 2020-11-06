@@ -64,9 +64,9 @@ export class PlayScreen implements IScreen {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         CarrierRenderSystem.render(this._game, renderContext);
-        
+
         if(this._activeDialog != "") {
-            DialogSystem.render(this._activeDialog, this._game, renderContext);
+            DialogSystem.render(["Hallo!", "2e Regel :O", "3e Regel :D:D:D"], this._game, renderContext);
         }
         this._ui.frameDone();
     }
