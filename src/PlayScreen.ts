@@ -17,7 +17,7 @@ export class PlayScreen implements IScreen {
     private readonly _game: Game;
     private readonly _ui = new Ui();
     private readonly _uiInputProvider;
-    
+
     private _pause = false;
     private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
@@ -98,8 +98,7 @@ export class PlayScreen implements IScreen {
     }
 
     private handleInput(time: FrameTime) {
-        const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
-        let location = dimensions.bounds.location;
+        const player = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
 
         if (this._game.input.wasButtonPressedInFrame(Keys.Pause)) {
             this._pause = !this._pause;
@@ -110,21 +109,26 @@ export class PlayScreen implements IScreen {
             return;
         }
 
+        let velocity = Vector.zero;
         if (this._game.input.isButtonDown(Keys.MoveLeft)) {
-            location.x -= time.calculateMovement(this._playerSpeed);
+            velocity = velocity.add(new Vector(-time.calculateMovement(this._playerSpeed), 0));
         }
         if (this._game.input.isButtonDown(Keys.MoveRight)) {
-            location.x += time.calculateMovement(this._playerSpeed);
+            velocity = velocity.add(new Vector(time.calculateMovement(this._playerSpeed), 0));
         }
         if (this._game.input.isButtonDown(Keys.MoveUp)) {
-            location.y -= time.calculateMovement(this._playerSpeed);
+            velocity = velocity.add(new Vector(0, -time.calculateMovement(this._playerSpeed)));
         }
         if (this._game.input.isButtonDown(Keys.MoveDown)) {
-            location.y += time.calculateMovement(this._playerSpeed);
+            velocity = velocity.add(new Vector(0, time.calculateMovement(this._playerSpeed)));
+        }
+
+        if (AISystem.canMove(this._game.state, this._game.state.playerId, velocity)) {
+            player.bounds.location = player.bounds.location.add(velocity);
         }
 
         if ((this._game.input.isButtonDown(Keys.Fire) || this._game.mouse.Button1Down) && this._fireTimer.update(time.currentTime)) {
-            let vector = this._game.mouse.Location.toVector().subtract(dimensions.centerLocation.toVector());
+            let vector = this._game.mouse.Location.toVector().subtract(player.centerLocation.toVector());
             vector = vector.toUnit().multiplyScalar(200);
 
             let spawners = [
@@ -132,7 +136,7 @@ export class PlayScreen implements IScreen {
             ];
 
             var spawner = randomArrayElement(spawners);
-            spawner(this._game, dimensions.centerLocation, vector);
+            spawner(this._game, player.centerLocation, vector);
         }
     }
 

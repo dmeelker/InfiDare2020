@@ -80,6 +80,10 @@ export class Rectangle {
     public addBorder(size: number): Rectangle {
         return new Rectangle(this.location.x - size, this.location.y - size, this.size.width + (size * 2), this.size.height + (size * 2));
     }
+
+    translate(v: Vector) {
+        return new Rectangle(this.x + v.x, this.y + v.y, this.width, this.height);
+    }
 }
 
 export class Vector {
