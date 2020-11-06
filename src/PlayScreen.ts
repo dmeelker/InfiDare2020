@@ -179,6 +179,7 @@ export class PlayScreen implements IScreen {
 
 
         this.switchState(GameState.Defending);
+        this._waveNumber = 0;
         gameState.ecs.clear();
         gameState.score.reset();
         this.spawnBoxes();
@@ -193,7 +194,7 @@ export class PlayScreen implements IScreen {
 
     spawnWave() {
         for (let i = 0; i < 2 * (this._waveNumber + 2); i++) {
-            createEnemy(this._game, new Point(randomInt(1, 400), randomInt(200, 300)));
+            createEnemy(this._game, new Point(randomInt(1, 400), randomInt(550, 650)));
         }
         this._waveNumber++;
     }
