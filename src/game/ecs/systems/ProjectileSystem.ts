@@ -42,9 +42,9 @@ function checkForCollisions(game: Game, projectileComponent: ProjectileComponent
                 dropCarriedObject(game, enemy.entityId);
                 game.state.ecs.disposeEntity(enemy.entityId);
 
-                if (chance(15)) {
-                    createShoppingCart(game, enemyDimensions.bounds.location);
-                }
+                // if (chance(15)) {
+                //     createShoppingCart(game, enemyDimensions.bounds.location);
+                // }
 
                 if (enemy.behaviour == EnemyBehaviour.Spawner) {
                     game.messageBus.raise(Events.DirkDeath, new DirkDeathEventArgs());

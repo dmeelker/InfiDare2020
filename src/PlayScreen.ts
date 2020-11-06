@@ -125,10 +125,10 @@ export class PlayScreen implements IScreen {
     }
 
     private isAreaClear(area: Rectangle): boolean {
-        for(let barrier of this._game.state.ecs.components.barrierComponents.all) {
+        for (let barrier of this._game.state.ecs.components.barrierComponents.all) {
             const dimensions = this._game.state.ecs.components.dimensionsComponents.get(barrier.entityId);
 
-            if(area.overlaps(dimensions.bounds)) {
+            if (area.overlaps(dimensions.bounds)) {
                 return false;
             }
         }
@@ -140,7 +140,7 @@ export class PlayScreen implements IScreen {
         let location: Point;
         do {
             location = new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
-        } while(!this.isAreaClear(new Rectangle(location.x - 20, location.y - 20, 40, 40)));
+        } while (!this.isAreaClear(new Rectangle(location.x - 20, location.y - 20, 40, 40)));
 
         return location;
     }
@@ -223,9 +223,6 @@ export class PlayScreen implements IScreen {
         this.spawnBoxes();
         this.spawnPaper();
 
-        createShoppingCart(this._game, new Point(50, 200));
-        createShoppingCart(this._game, new Point(300, 100));
-
         gameState.playerId = createPlayer(this._game, new Point(200, 225));
         this.spawnWave();
     }
@@ -233,7 +230,7 @@ export class PlayScreen implements IScreen {
     private spawnWave() {
         const spawnArea = new Rectangle(
             this._game.view.size.width - 50, 100,
-            50, this._game.view.size.height - 200
+            30, this._game.view.size.height - 200
         );
 
         this._waveNumber++;
@@ -319,7 +316,7 @@ export class PlayScreen implements IScreen {
         }
 
         if (this._activeScenario != null) {
-            if (this._game.input.wasButtonPressedInFrame(Keys.Use) || this._game.mouse.Button1Down) {
+            if (this._game.input.wasButtonPressedInFrame(Keys.Use) || this._game.input.wasButtonPressedInFrame(Keys.Fire)) {
                 if (this._activeScenario.finished()) {
                     this._activeScenario = null;
                 }
