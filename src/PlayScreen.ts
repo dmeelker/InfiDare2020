@@ -107,7 +107,8 @@ export class PlayScreen implements IScreen {
         }
     }
     private spawnBoxes() {
-        for(let i=0; i<this._waveNumber; i++) {
+        const count = Math.min(this._waveNumber, 3);
+        for(let i=0; i<count; i++) {
             createFallingBox(this._game, this.randomLocation());
         }
     }
