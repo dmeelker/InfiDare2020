@@ -7,16 +7,23 @@ export enum EnemyState {
     MovingToPos,
 }
 
+export enum EnemyBehaviour {
+    Normal,
+    Ram
+}
+
 export class EnemyComponent extends Component {
     public state = EnemyState.FindingTarget;
     public hasTP = false;
     public targetId: EntityId;
     public targetPos: Point;
     private readonly baseSpeed: number;
+    public behaviour = EnemyBehaviour.Normal;
+    public ramForce = 1;
 
-    constructor(entityId: EntityId) {
+    constructor(entityId: EntityId, behaviour: EnemyBehaviour = EnemyBehaviour.Normal) {
         super(entityId);
-
+        this.behaviour = behaviour;
         this.baseSpeed = randomInt(25, 75);
     }
     

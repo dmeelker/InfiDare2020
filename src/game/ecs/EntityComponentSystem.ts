@@ -9,6 +9,7 @@ import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
 import { textChangeRangeIsUnchanged } from "typescript";
 import { AudioComponent } from "./components/AudioComponent";
 import { FallingObjectComponent } from "./components/FallingObjectComponent";
+import { BarrierComponent } from "./components/BarrierComponent";
 
 export type EntityId = number;
 
@@ -60,6 +61,7 @@ export class ComponentStore {
     public readonly enemyTargetComponents = new ComponentList<EnemyTargetComponent>();
     public readonly audioComponents = new ComponentList<AudioComponent>();
     public readonly fallingObjectComponents = new ComponentList<FallingObjectComponent>();
+    public readonly barrierComponents = new ComponentList<BarrierComponent>();
 
     private readonly _all = [
         this.renderComponents,
@@ -72,7 +74,8 @@ export class ComponentStore {
         this.enemyComponents,
         this.enemyTargetComponents,
         this.audioComponents,
-        this.fallingObjectComponents];
+        this.fallingObjectComponents,
+        this.barrierComponents];
 
     public removeComponentsForEntity(entityId: EntityId) {
         this._all.forEach(store => store.remove(entityId));
