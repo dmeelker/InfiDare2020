@@ -77,16 +77,16 @@ export class PlayScreen implements IScreen {
 
         this.checkPlayerDestroyed();
 
-        switch(this._state) {
+        switch (this._state) {
             case GameState.Preparing:
             case GameState.Defending:
-                if(this.checkAllTargetsGone()) {
+                if (this.checkAllTargetsGone()) {
                     this.gameLost();
                 }
                 break;
 
             case GameState.Lost:
-                if(time.currentTime - this._stateEnterTime >= this._lostTime) {
+                if (time.currentTime - this._stateEnterTime >= this._lostTime) {
                     this.resetGame();
                 }
                 break;
@@ -104,8 +104,7 @@ export class PlayScreen implements IScreen {
         }
     }
 
-    handleEnemyKilled() 
-    {
+    handleEnemyKilled() {
         if (this._firstBlood) {
             this._activeScenario = new FirstEnemyKilled();
             this._firstBlood = false;
@@ -117,12 +116,12 @@ export class PlayScreen implements IScreen {
         RenderSystem.render(this._game.state.ecs, renderContext);
         CarrierRenderSystem.render(this._game, renderContext);
 
-        if(this._activeScenario != null) {
+        if (this._activeScenario != null) {
             DialogSystem.render(this._activeScenario.current(), this._game, renderContext);
         }
 
-        if(this._state == GameState.Lost) {
-            this._activeScenario = new GameOver();
+        if (this._state == GameState.Lost) {
+            DialogSystem.render(["You have lost!", "They've taken all of the TP!", "Now how will you survice the pandemic?!"], this._game, renderContext);
         }
 
         this._ui.frameDone();
@@ -157,8 +156,8 @@ export class PlayScreen implements IScreen {
     }
 
     spawnWave() {
-        for (let i = 0; i < this._waveNumber + 2; i++) {
-            createEnemy(this._game, new Point(50 * i, 250));
+        for (let i = 0; i < 2 * (this._waveNumber + 2); i++) {
+            createEnemy(this._game, new Point(25 * i, 250));
         }
         this._waveNumber++;
     }
@@ -180,7 +179,7 @@ export class PlayScreen implements IScreen {
             this._pause = !this._pause;
         }
 
-        if(this._activeScenario != null) {
+        if (this._activeScenario != null) {
             if (this._game.input.wasButtonPressedInFrame(Keys.Use)) {
                 if (this._activeScenario.finished()) {
                     this._activeScenario = null;
@@ -265,8 +264,8 @@ export class PlayScreen implements IScreen {
     private noTargetsCarried() {
         var carriers = this._game.state.ecs.components.carrierComponents.all;
 
-        for(let carrier of carriers) {
-            if(carrier.carriedEntityComponents.enemyTargetComponents.count > 0) {
+        for (let carrier of carriers) {
+            if (carrier.carriedEntityComponents.enemyTargetComponents.count > 0) {
                 return false;
             }
         }
