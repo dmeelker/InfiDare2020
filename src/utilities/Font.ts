@@ -32,7 +32,7 @@ export class Font {
             if(fontChar == undefined) {
                 continue;
             }
-    
+
             context.drawImage(this.Image, fontChar.X, fontChar.Y, fontChar.Width, fontChar.Height, location.x + fontChar.XOffset, location.y + fontChar.YOffset, fontChar.Width, fontChar.Height);
     
             location = location.add(new Point(fontChar.XAdvance, 0));

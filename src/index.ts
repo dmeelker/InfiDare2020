@@ -93,9 +93,9 @@ export class Game {
         await this.images.load("toiletpaper", "gfx/tp.png");
         await this.images.load("chicken", "gfx/chicken.png");
         await this.images.load("shoppingcart", "gfx/cart.png");
-
         await this.images.load("pixelfont-small", "gfx/pixelfont-small.png");
         await this.images.load("pixelfont-medium", "gfx/pixelfont-medium.png");
+        await this.images.load("dialog", "gfx/dialog.png");
     }
 
     private async setupAnimations() {
@@ -117,7 +117,7 @@ export class Game {
     private intializeScreens() {
         this.introScreen = new IntroScreen(this);
         this.playScreen = new PlayScreen(this);
-        this.screenManager = new ScreenManager(this.playScreen);
+        this.screenManager = new ScreenManager(this.introScreen);
     }
 
     private initializeKeyBindings() {

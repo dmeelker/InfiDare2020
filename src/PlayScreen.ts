@@ -9,10 +9,12 @@ import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import * as AISystem from "./game/ecs/systems/AISystem"
 import * as CarrierRenderSystem from "./game/ecs/systems/CarrierRenderSystem"
 import * as CarrierHelper from "./game/ecs/utilities/CarrierHelper"
+import * as DialogSystem from "./game/ecs/systems/DialogSystem";
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
+import { createDialog } from "./game/ecs/DialogFactory";
 import { randomArrayElement } from "./utilities/Random";
 import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
 import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
@@ -25,9 +27,11 @@ export class PlayScreen implements IScreen {
     private _pause = false;
     private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
+    private _activeDialog = "";
 
     public constructor(game: Game) {
         this._game = game;
+        this._ui.defaultFont = this._game.fonts.medium;
         this._uiInputProvider = new DomUiEventProvider(this._ui, game.view.canvas, game.view.scale);
     }
 
@@ -60,6 +64,10 @@ export class PlayScreen implements IScreen {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         CarrierRenderSystem.render(this._game, renderContext);
+        
+        if(this._activeDialog != "") {
+            DialogSystem.render(this._activeDialog, this._game, renderContext);
+        }
         this._ui.frameDone();
     }
 
@@ -106,6 +114,7 @@ export class PlayScreen implements IScreen {
         const player = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
 
         if (this._game.input.wasButtonPressedInFrame(Keys.Pause)) {
+            this._activeDialog = "Hallo!";
             this._pause = !this._pause;
         }
 
