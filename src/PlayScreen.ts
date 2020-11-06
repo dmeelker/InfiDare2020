@@ -38,6 +38,11 @@ export class PlayScreen implements IScreen {
         this.handleInput(time);
 
         ProjectileSystem.update(this._game);
+        const enemy = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.enemyId);
+        const target = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
+        const velocity = target.centerLocation.subtract(enemy.centerLocation).toUnit().multiplyScalar(0.6);
+        enemy.move(velocity);
+
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
         this._game.state.ecs.removeDisposedEntities();
@@ -75,7 +80,7 @@ export class PlayScreen implements IScreen {
         createShoppingCart(this._game, new Point(300, 100));
 
         gameState.playerId = createPlayer(this._game, new Point(100, 100));
-        gameState.enemyId = createEnemy(this._game, new Point(50 + 200 * Math.random(), 300))
+        gameState.enemyId = createEnemy(this._game, new Point(200, 200))
     }
 
     spawnPaper() {
