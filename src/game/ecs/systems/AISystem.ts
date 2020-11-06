@@ -45,7 +45,7 @@ function executeNormalBehaviour(game: Game, enemy: EnemyComponent) {
             break;
         case EnemyState.FindingTarget:
             if (enemy.hasTP) {
-                moveTowardsTarget(game, enemy, enemyDimensions, new Point(game.view.size.width / 2, game.view.size.height + 100));
+                moveTowardsTarget(game, enemy, enemyDimensions, new Point(game.view.size.width + 100, game.view.size.height / 2));
             } else {
                 if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
                     enemy.targetId = findClosestTarget(game, enemyDimensions.centerLocation);
