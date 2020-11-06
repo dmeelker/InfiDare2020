@@ -18,6 +18,10 @@ export function update(game: Game) {
             case EnemyState.FindingTarget:
                 if(!enemy.targetId || !targetVisible(game, enemy.targetId)) {
                     enemy.targetId = findClosestTarget(game, enemyDimensions.centerLocation);
+
+                    if(!enemy.targetId) {
+                        continue;
+                    }
                 }
         
                 const targetLocation = game.state.ecs.components.dimensionsComponents.get(enemy.targetId).centerLocation;
@@ -32,6 +36,9 @@ export function update(game: Game) {
 
             case EnemyState.Leaving:
                 moveTowardsTarget(game, enemyDimensions, new Point(200, 400));
+                break;
+
+            case EnemyState.Wander:
                 break;
         }
     }

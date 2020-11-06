@@ -35,7 +35,7 @@ export class Fonts {
 }
 
 export class Game {
-    private _time: FrameTime;
+    private _time = new FrameTime(0, 0);
 
     public get time(): FrameTime {
         return this._time;

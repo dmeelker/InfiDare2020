@@ -3,7 +3,8 @@ import { Component, EntityId } from "../EntityComponentSystem";
 
 export enum EnemyState {
     FindingTarget,
-    Leaving
+    Leaving,
+    Wander
 }
 
 export class EnemyComponent extends Component {

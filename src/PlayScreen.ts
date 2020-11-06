@@ -16,6 +16,12 @@ import { Point, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
 import { randomArrayElement } from "./utilities/Random";
 
+enum GameState {
+    Preparing,
+    Defending,
+    Lost
+}
+
 export class PlayScreen implements IScreen {
     private readonly _game: Game;
     private readonly _ui = new Ui();
@@ -27,6 +33,10 @@ export class PlayScreen implements IScreen {
     private _waveTimer: Timer;
     private _waveNumber = 1;
     private _activeDialog = "";
+    private _state = GameState.Preparing;
+    private _stateEnterTime = 0;
+    private _prepareTime = 10000;
+    private _lostTime = 5000;
 
     public constructor(game: Game) {
         this._game = game;
@@ -54,18 +64,36 @@ export class PlayScreen implements IScreen {
         AISystem.update(this._game);
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
+        this.updateWave(time);
         this._game.state.ecs.removeDisposedEntities();
 
+        this.checkPlayerDestroyed();
+
+        switch(this._state) {
+            case GameState.Preparing:
+            case GameState.Defending:
+                if(this.checkAllTargetsGone()) {
+                    this.gameLost();
+                }
+                break;
+
+            case GameState.Lost:
+                if(time.currentTime - this._stateEnterTime >= this._lostTime) {
+                    this.resetGame();
+                }
+                break;
+        }
+    }
+
+    private updateWave(time: FrameTime) {
         if (this._game.state.ecs.components.enemyComponents.count === 0) {
             if (!this._waveTimer) {
-                this._waveTimer = new Timer(5_000);
+                this._waveTimer = new Timer(5000);
             } else if (this._waveTimer.update(time.currentTime)) {
                 this.spawnWave();
                 this._waveTimer = null;
             }
         }
-
-        this.checkPlayerDestroyed();
     }
 
     render(renderContext: CanvasRenderingContext2D): void {
@@ -76,6 +104,11 @@ export class PlayScreen implements IScreen {
         if (this._activeDialog != "") {
             DialogSystem.render(["Hallo!", "2e Regel :O", "3e Regel :D:D:D"], this._game, renderContext);
         }
+
+        if(this._state == GameState.Lost) {
+            DialogSystem.render(["You have lost!", "They've taken all of the TP!", "Now how will you survice the pandemic?!"], this._game, renderContext);
+        }
+
         this._ui.frameDone();
     }
 
@@ -95,6 +128,7 @@ export class PlayScreen implements IScreen {
     private resetGame() {
         let gameState = this._game.state;
 
+        this.switchState(GameState.Defending);
         gameState.ecs.clear();
         gameState.score.reset();
         this.spawnPaper();
@@ -190,5 +224,34 @@ export class PlayScreen implements IScreen {
         if (dimensions == undefined) {
             this.resetGame();
         }
+    }
+
+    private switchState(newState: GameState) {
+        this._state = newState;
+        this._stateEnterTime = this._game.time.currentTime;
+    }
+
+    private checkAllTargetsGone() {
+        return this.noTargetsOnGround() && this.noTargetsCarried();
+    }
+
+    private noTargetsOnGround() {
+        return this._game.state.ecs.components.enemyTargetComponents.count == 0;
+    }
+
+    private noTargetsCarried() {
+        var carriers = this._game.state.ecs.components.carrierComponents.all;
+
+        for(let carrier of carriers) {
+            if(carrier.carriedEntityComponents.enemyTargetComponents.count > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private gameLost() {
+        this.switchState(GameState.Lost);
     }
 }
