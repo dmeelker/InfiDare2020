@@ -1,4 +1,7 @@
 import { Game } from "../../..";
+import { Vector } from "../../../utilities/Trig";
+import { GameState } from "../../GameState";
+import { EntityId } from "../EntityComponentSystem";
 
 const SPEED: number = 20;
 
@@ -11,6 +14,22 @@ export function update(game: Game) {
 
         const velocity = player.centerLocation.subtract(enemy.centerLocation).toUnit()
             .multiplyScalar(game.time.calculateMovement(SPEED));
-        enemy.move(velocity);
+
+        if (canMove(game.state, enemyId, velocity)) {
+            enemy.move(velocity);
+        }
     });
+}
+
+export function canMove(state: GameState, id: EntityId, velocity: Vector): boolean {
+    const mover = state.ecs.components.dimensionsComponents.get(id);
+    const targetBounds = mover.bounds.translate(velocity);
+    let canMove = true;
+    for (var component of state.ecs.components.dimensionsComponents.all) {
+        if (component.bounds.overlaps(targetBounds) && component.entityId != mover.entityId) {
+            return false;
+        }
+    }
+
+    return true;
 }
