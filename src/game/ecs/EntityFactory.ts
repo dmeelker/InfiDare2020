@@ -193,7 +193,7 @@ export function createFallingBox(game: Game, location: Point) {
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
     game.state.ecs.components.fallingObjectComponents.add(new FallingObjectComponent(entityId, targetLocation, 100));
-    game.state.ecs.components.barrierComponents.add(new BarrierComponent(entityId, 5));
+    game.state.ecs.components.barrierComponents.add(new BarrierComponent(entityId, 8));
 
     return entityId;
 }
