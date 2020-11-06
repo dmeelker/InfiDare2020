@@ -90,6 +90,7 @@ export class Game {
     private async loadImages() {
         await this.images.load("player", "gfx/guy.png");
         await this.images.load("floor1", "gfx/floor1.png");
+        await this.images.load("box", "gfx/box.png");
         await this.images.load("apple", "gfx/apple.png");
         await this.images.load("beercan", "gfx/beercan.png");
         await this.images.load("toiletpaper", "gfx/tp.png");
@@ -98,6 +99,7 @@ export class Game {
         await this.images.load("pixelfont-small", "gfx/pixelfont-small.png");
         await this.images.load("pixelfont-medium", "gfx/pixelfont-medium.png");
         await this.images.load("dialog", "gfx/dialog.png");
+        await this.images.load("shadow", "gfx/shadow.png");
     }
 
     private async setupAnimations() {

@@ -10,11 +10,13 @@ import * as AISystem from "./game/ecs/systems/AISystem"
 import * as CarrierRenderSystem from "./game/ecs/systems/CarrierRenderSystem"
 import * as CarrierHelper from "./game/ecs/utilities/CarrierHelper"
 import * as DialogSystem from "./game/ecs/systems/DialogSystem";
+import * as FallingObjectSystem from "./game/ecs/systems/FallingObjectSystem";
+import * as FallingObjectShadowRenderer from "./game/ecs/systems/FallingObjectShadowRenderer";
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
-import { randomArrayElement } from "./utilities/Random";
+import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox } from "./game/ecs/EntityFactory";
+import { randomArrayElement, randomInt } from "./utilities/Random";
 import * as Events from "./Events/Events";
 import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
 import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
@@ -69,6 +71,7 @@ export class PlayScreen implements IScreen {
         }
 
         ProjectileSystem.update(this._game);
+        FallingObjectSystem.update(this._game);
         AISystem.update(this._game);
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
@@ -90,6 +93,7 @@ export class PlayScreen implements IScreen {
                 }
 
                 if (this._game.state.ecs.components.enemyComponents.count === 0) {
+                    this.spawnBoxes();
                     this.switchState(GameState.Preparing);
                 }
                 break;
@@ -101,6 +105,15 @@ export class PlayScreen implements IScreen {
                 break;
         }
     }
+    private spawnBoxes() {
+        for(let i=0; i<this._waveNumber; i++) {
+            createFallingBox(this._game, this.randomLocation());
+        }
+    }
+
+    private randomLocation(): Point {
+        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height));
+    }
 
     handleEnemyKilled() {
         if (this._firstBlood) {
@@ -111,6 +124,7 @@ export class PlayScreen implements IScreen {
 
     render(renderContext: CanvasRenderingContext2D): void {
         this.drawFloor(renderContext);
+        FallingObjectShadowRenderer.render(this._game, renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         CarrierRenderSystem.render(this._game, renderContext);
 
@@ -163,6 +177,7 @@ export class PlayScreen implements IScreen {
         this.switchState(GameState.Defending);
         gameState.ecs.clear();
         gameState.score.reset();
+        this.spawnBoxes();
         this.spawnPaper();
 
         createShoppingCart(this._game, new Point(50, 200));
