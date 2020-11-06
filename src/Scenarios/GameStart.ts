@@ -18,12 +18,11 @@ export abstract class BaseScenario {
 
     public finished(): boolean {
         this._state += 1;
-        return this.Dialogs.length <= this._state; 
+        return this.Dialogs.length <= this._state;
     }
 }
 
-export class Dialog 
-{
+export class Dialog {
     public static readonly You = "You";
     public readonly Speaker: string;
     public readonly Color: string;
@@ -58,7 +57,7 @@ export class FirstEnemyKilled extends BaseScenario {
 export class GameOver extends BaseScenario {
     public constructor() {
         super();
-        this.add(new Dialog("Game", ["You have lost!", "They've taken all of the TP!", "Now how will you survice the pandemic?!"]));
+        this.add(new Dialog("Game over!", ["You have lost!", "They've taken all of the TP!", "Now how will you survive the pandemic?!"]));
     }
 }
 
