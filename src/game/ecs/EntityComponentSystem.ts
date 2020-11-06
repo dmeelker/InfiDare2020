@@ -26,7 +26,7 @@ export class ComponentList<TComponent extends Component> {
         return this._components.size;
     }
 
-    public get(id: EntityId) : TComponent | undefined {
+    public get(id: EntityId): TComponent | undefined {
         return this._components.get(id);
     }
 
@@ -50,11 +50,11 @@ export class ComponentStore {
     public readonly timedDestroyComponents = new ComponentList<TimedDestroyComponent>();
     public readonly carrierComponents = new ComponentList<CarrierComponent>();
     public readonly carryableComponents = new ComponentList<CarryableComponent>();
-    
+
     private readonly _all = [
-        this.renderComponents, 
-        this.dimensionsComponents, 
-        this.projectileComponents, 
+        this.renderComponents,
+        this.dimensionsComponents,
+        this.projectileComponents,
         this.timedDestroyComponents,
         this.carrierComponents,
         this.carryableComponents];
@@ -67,13 +67,13 @@ export class ComponentStore {
         this._all.forEach(store => store.clear());
     }
 
-    public exportSingleEntity(entityId: EntityId) : ComponentStore {
+    public exportSingleEntity(entityId: EntityId): ComponentStore {
         const result = new ComponentStore();
 
-        for(let i=0; i<this._all.length; i++) {
+        for (let i = 0; i < this._all.length; i++) {
             const component = this._all[i].get(entityId);
 
-            if(component) {
+            if (component) {
                 result._all[i].add(component);
             }
         }
@@ -82,10 +82,10 @@ export class ComponentStore {
     }
 
     public import(store: ComponentStore) {
-        for(let i=0; i<store._all.length; i++) {
+        for (let i = 0; i < store._all.length; i++) {
             const components = store._all[i].all;
 
-            for(let component of components) {
+            for (let component of components) {
                 this._all[i].add(component);
             }
         }
@@ -123,7 +123,7 @@ export class EntityComponentSystem {
     }
 
     public removeDisposedEntities() {
-        while(this._disposableEntityIds.length > 0) {
+        while (this._disposableEntityIds.length > 0) {
             const id = this._disposableEntityIds.pop();
             this.freeEntityId(id);
             this.components.removeComponentsForEntity(id);

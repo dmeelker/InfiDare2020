@@ -5,13 +5,16 @@ import { RenderComponent, StaticImageProvider } from "./components/RenderCompone
 import { ProjectileComponent } from "./components/ProjectileComponent";
 import { EntityId } from "./EntityComponentSystem";
 import { CarryableComponent } from "./components/CarryableComponent";
+import { LivingComponent } from "./components/LivingComponent";
+
+const PLAYER_HEALTH: number = 100;
+const ENEMY_HEALTH: number = 5;
 
 export function createPlayer(game: Game, location: Point,): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("player");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height));
-    dimensions.center = new Point(image.width / 2, image.height / 2);
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), PLAYER_HEALTH);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
@@ -23,7 +26,7 @@ export function createEnemy(game: Game, location: Point): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("player");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height));
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
@@ -78,12 +81,11 @@ export function createToiletPaper(game: Game, location: Point) {
     const image = game.images.get("toiletpaper");
 
     const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
-    dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
-    
+
     return entityId;
 }
 
@@ -92,7 +94,6 @@ export function createShoppingCart(game: Game, location: Point) {
     const image = game.images.get("shoppingcart");
 
     const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
-    dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));

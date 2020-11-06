@@ -24,7 +24,6 @@ export function update(game: Game) {
 export function canMove(state: GameState, id: EntityId, velocity: Vector): boolean {
     const mover = state.ecs.components.dimensionsComponents.get(id);
     const targetBounds = mover.bounds.translate(velocity);
-    let canMove = true;
     for (var component of state.ecs.components.dimensionsComponents.all) {
         if (component.bounds.overlaps(targetBounds) && component.entityId != mover.entityId) {
             return false;
