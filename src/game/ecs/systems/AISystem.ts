@@ -6,19 +6,22 @@ import { EntityId } from "../EntityComponentSystem";
 const SPEED: number = 20;
 
 export function update(game: Game) {
-    game.state.enemies.forEach(enemyId => {
-        const enemy = game.state.ecs.components.dimensionsComponents.get(enemyId);
+    const enemies = game.state.ecs.components.enemyComponents.all;
+
+    for(let enemy of enemies) {
+        const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId);
+        const playerDimensions = game.state.ecs.components.dimensionsComponents.get(game.state.playerId);
 
         // TODO target toilet paper
-        const player = game.state.ecs.components.dimensionsComponents.get(game.state.playerId);
+        enemy.target = playerDimensions.centerLocation;
 
-        const velocity = player.centerLocation.subtract(enemy.centerLocation).toUnit()
+        const velocity = enemy.target.subtract(enemyDimensions.centerLocation).toUnit()
             .multiplyScalar(game.time.calculateMovement(SPEED));
 
-        if (canMove(game.state, enemyId, velocity)) {
-            enemy.move(velocity);
+        if (canMove(game.state, enemy.entityId, velocity)) {
+            enemyDimensions.move(velocity);
         }
-    });
+    }
 }
 
 export function canMove(state: GameState, id: EntityId, velocity: Vector): boolean {
