@@ -55,7 +55,7 @@ export function dropCarriedObject(game: Game, carrierEntityId: EntityId) {
     const carryableDimensions = ecs.components.dimensionsComponents.get(carrier.carriedEntityId);
     const carryableHalfSize = carryableDimensions.bounds.halfSize();
 
-    carryableDimensions.bounds.location = new Point(carrierDimensions.centerLocation.x - carryableHalfSize.width, carrierDimensions.bounds.y + carrierDimensions.bounds.height); 
+    carryableDimensions.bounds.location = new Point(carrierDimensions.centerLocation.x + carryableHalfSize.width, carrierDimensions.bounds.y); 
 
     ecs.components.carrierComponents.remove(carrierEntityId);
 }
