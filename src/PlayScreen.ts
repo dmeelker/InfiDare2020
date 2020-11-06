@@ -61,6 +61,7 @@ export class PlayScreen implements IScreen {
                 this._waveTimer = new Timer(5_000);
             } else if (this._waveTimer.update(time.currentTime)) {
                 this.spawnWave();
+                this._waveTimer = null;
             }
         }
 
