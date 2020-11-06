@@ -9,7 +9,7 @@ import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createBeerCan, createChicken, createPlayer, createToiletPaper } from "./game/ecs/EntityFactory";
+import { createApple, createBeerCan, createChicken, createPlayer, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
 import { randomArrayElement } from "./utilities/Random";
 
 export class PlayScreen implements IScreen {
@@ -70,6 +70,9 @@ export class PlayScreen implements IScreen {
         gameState.ecs.clear();
         gameState.score.reset();
         this.spawnPaper();
+
+        createShoppingCart(this._game, new Point(50, 200));
+        createShoppingCart(this._game, new Point(300, 100));
 
         gameState.playerId = createPlayer(this._game, new Point(100, 100));
     }
