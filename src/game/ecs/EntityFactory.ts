@@ -85,7 +85,8 @@ export function createToiletPaper(game: Game, location: Point) {
     const image = game.images.get("toiletpaper");
 
     const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
-
+    dimensions.hasCollision = false;
+    
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
