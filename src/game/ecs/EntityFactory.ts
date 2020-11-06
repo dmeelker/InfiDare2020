@@ -10,6 +10,7 @@ import { EnemyComponent } from "./components/EnemyComponent";
 import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
 import { AudioComponent } from "./components/AudioComponent";
 import { FallingObjectComponent } from "./components/FallingObjectComponent";
+import { randomInt } from "../../utilities/Random";
 
 const PLAYER_HEALTH: number = 100;
 const ENEMY_HEALTH: number = 4;
@@ -28,7 +29,8 @@ export function createPlayer(game: Game, location: Point,): EntityId {
 
 export function createEnemy(game: Game, location: Point): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
-    const image = game.images.get("player");
+    var zombieType = "zombie"+ randomInt(0, 3);
+    var image = game.images.get(zombieType);
 
     const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH);
     dimensions.hasCollision = false;
