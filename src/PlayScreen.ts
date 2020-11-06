@@ -14,10 +14,7 @@ import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
-import { createDialog } from "./game/ecs/DialogFactory";
 import { randomArrayElement } from "./utilities/Random";
-import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
-import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 
 export class PlayScreen implements IScreen {
     private readonly _game: Game;
@@ -27,6 +24,8 @@ export class PlayScreen implements IScreen {
     private _pause = false;
     private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
+    private _waveTimer = new Timer(5_000);
+    private _waveNumber = 1;
     private _activeDialog = "";
 
     public constructor(game: Game) {
@@ -57,6 +56,13 @@ export class PlayScreen implements IScreen {
         EntityCleanupSystem.update(this._game);
         this._game.state.ecs.removeDisposedEntities();
 
+        if (this._game.state.enemies.length === 0) {
+            if (this._waveTimer.update(time.currentTime)) {
+                this._waveTimer.reset(5_000);
+                this.spawnWave();
+            }
+        }
+
         this.checkPlayerDestroyed();
     }
 
@@ -65,7 +71,7 @@ export class PlayScreen implements IScreen {
         RenderSystem.render(this._game.state.ecs, renderContext);
         CarrierRenderSystem.render(this._game, renderContext);
 
-        if(this._activeDialog != "") {
+        if (this._activeDialog != "") {
             DialogSystem.render(["Hallo!", "2e Regel :O", "3e Regel :D:D:D"], this._game, renderContext);
         }
         this._ui.frameDone();
@@ -95,9 +101,14 @@ export class PlayScreen implements IScreen {
         createShoppingCart(this._game, new Point(300, 100));
 
         gameState.playerId = createPlayer(this._game, new Point(100, 100));
-        gameState.enemies.push(createEnemy(this._game, new Point(200, 100)));
-        gameState.enemies.push(createEnemy(this._game, new Point(200, 200)));
-        gameState.enemies.push(createEnemy(this._game, new Point(200, 300)));
+        this.spawnWave();
+    }
+
+    spawnWave() {
+        for (let i = 0; i < this._waveNumber + 2; i++) {
+            this._game.state.enemies.push(createEnemy(this._game, new Point(50 * i, 250)));
+        }
+        this._waveNumber++;
     }
 
     spawnPaper() {
@@ -160,12 +171,12 @@ export class PlayScreen implements IScreen {
 
     private interact() {
         const currentCarrier = this._game.state.ecs.components.carrierComponents.get(this._game.state.playerId);
-        
-        if(currentCarrier) {
+
+        if (currentCarrier) {
             CarrierHelper.dropCarriedObject(this._game, this._game.state.playerId);
         } else {
             const carryable = CarrierHelper.findNearestCarryable(this._game, this._game.state.playerId);
-            if(carryable) {
+            if (carryable) {
                 CarrierHelper.carryObject(this._game, this._game.state.playerId, carryable.entityId);
             }
         }
