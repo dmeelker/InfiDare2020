@@ -6,9 +6,6 @@ export class EnemyKilledEventArgs extends EventArguments {
     }
 }
 
-
-
-
 export enum Events {
     EnemyKilled,
 }

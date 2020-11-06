@@ -19,6 +19,7 @@ import * as Events from "./Events/Events";
 import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
 import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
+import { GameOver } from "./Scenarios/GameStart";
 
 enum GameState {
     Preparing,
@@ -37,7 +38,6 @@ export class PlayScreen implements IScreen {
     private _fireTimer = new Timer(200);
     private _waveTimer: Timer;
     private _waveNumber = 1;
-    private _activeDialog = "";
     private _state = GameState.Preparing;
     private _stateEnterTime = 0;
     private _prepareTime = 10000;
@@ -122,7 +122,7 @@ export class PlayScreen implements IScreen {
         }
 
         if(this._state == GameState.Lost) {
-            DialogSystem.render(["You have lost!", "They've taken all of the TP!", "Now how will you survice the pandemic?!"], this._game, renderContext);
+            this._activeScenario = new GameOver();
         }
 
         this._ui.frameDone();

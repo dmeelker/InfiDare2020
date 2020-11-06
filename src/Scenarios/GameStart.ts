@@ -54,3 +54,13 @@ export class FirstEnemyKilled extends BaseScenario {
         this.add(new Dialog(Dialog.You, ["I got one!", "I don't get paid enough for this shit"]));
     }
 }
+
+export class GameOver extends BaseScenario {
+    public constructor() {
+        super();
+        this.add(new Dialog("Game", ["You have lost!", "They've taken all of the TP!", "Now how will you survice the pandemic?!"]));
+    }
+}
+
+
+
