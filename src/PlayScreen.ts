@@ -189,7 +189,7 @@ export class PlayScreen implements IScreen {
         }
 
         // ignore movement input when the game is paused.
-        if (this._pause) {
+        if (this._pause || this._activeScenario != null) {
             return;
         }
 
