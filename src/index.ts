@@ -1,5 +1,5 @@
-import { Images } from "./utilities/Images";
-import { FrameCounter } from "./utilities/FrameCounter";
+import {Images} from "./utilities/Images";
+import {FrameCounter} from "./utilities/FrameCounter";
 import PixelFontSmall from "./fonts/PixelFontSmall"
 import PixelFontMedium from "./fonts/PixelFontMedium"
 import { Point, Rectangle } from "./utilities/Trig";
@@ -19,21 +19,21 @@ import {LevelLoader} from "./utilities/LevelLoader/LevelLoader";
 import { MessageBus } from "./Events/MessageBus";
 
 export class ViewInfo {
-    public canvas: HTMLCanvasElement;
-    public context: CanvasRenderingContext2D;
-    public size: Rectangle;
-    public scale: number = 2;
+  public canvas: HTMLCanvasElement;
+  public context: CanvasRenderingContext2D;
+  public size: Rectangle;
+  public scale: number = 2;
 
-    public levelToScreenCoordinates(levelCoordinates: Point): Point {
-        return new Point(
-            this.size.width * (levelCoordinates.x / 100),
-            this.size.height * (levelCoordinates.y / 100))
-    }
+  public levelToScreenCoordinates(levelCoordinates: Point): Point {
+    return new Point(
+      this.size.width * (levelCoordinates.x / 100),
+      this.size.height * (levelCoordinates.y / 100))
+  }
 }
 
 export class Fonts {
-    public small: Font;
-    public medium: Font;
+  public small: Font;
+  public medium: Font;
 }
 
 export class Game {

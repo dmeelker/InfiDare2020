@@ -5,7 +5,7 @@ import {TileSet} from "./TileSet";
 export class Level {
   levels_folder = '/levels/'
   private TiledLevel: TiledLevel;
-  private TileSet: TileSet[] = [];
+  private TileSet: TileSet[];
   private TileIdArray: Uint32Array;
 
   constructor(private canvas: HTMLCanvasElement) {
@@ -16,20 +16,21 @@ export class Level {
     // get the file
     this.TiledLevel = await fetch(this.levels_folder + levelToLoad)
       .then(l => l.json())
-
     // search the tsx tilesets
     await this.parseTileSets();
+
     // read base64 level array
     this.parseDataForLayer();
     // draw all the tiles to screen
-    this.drawMap();
-    // bonus: apply the layers in order
-
-    // bonus: set collision rects
-
+    console.log('map loaded')
   }
 
-  private drawMap() {
+  private drawMap(): boolean {
+    if (!this.TileSet){
+      console.warn('TileSet isn\'t loaded yet...');
+      return false;
+    }
+
     for (let i = 0; i < this.TileIdArray.length; i++) {
       let tileId = this.TileIdArray[i];
       let x = i % this.TiledLevel.width;
@@ -37,6 +38,10 @@ export class Level {
 
       // GetTileSet
       const set = this.TileSet.find(t => tileId >= t.first_gid);
+      if (!set){
+        console.log(this.TileSet, tileId);
+        return;
+      }
       let xOnSheet = (tileId - set.first_gid) % set.columns;
       let yOnSheet = Math.floor((tileId - set.first_gid) / (set.tilecount / set.columns))
 
@@ -44,10 +49,13 @@ export class Level {
         .drawImage(set.image_tag, xOnSheet, yOnSheet, set.source_width, set.source_height,
           x, y, this.TiledLevel.tilewidth, this.TiledLevel.tileheight);
     }
+    return true;
   }
 
-  private async parseTileSets(): Promise<void> {
+  private async parseTileSets(): Promise<TileSet[]> {
     let convert = require('xml-js');
+    if (!this.TileSet){}
+      this.TileSet = [];
 
     for (let i = 0; i < this.TiledLevel.tilesets.length; i++) {
       const ts = this.TiledLevel.tilesets[i];
@@ -56,10 +64,15 @@ export class Level {
         .then(d => d.text())
         .then(t => convert.xml2json(t, {compact: true, spaces: 4}));
 
-      await this.buildTileSetFromXml(jsonXml, ts.firstgid)
-        .then(t => this.TileSet.push(t))
-        .then(() => this.TileSet.sort((t, o) => t.first_gid - o.first_gid)); // do *NOT* remove!
+      const tileSet = await this.buildTileSetFromXml(jsonXml, ts.firstgid);
+
+      this.TileSet.push(tileSet);
+
+      //Sorting is important for draw call, see line 39
+      this.TileSet.sort((t, o) => t.first_gid - o.first_gid);
     }
+
+    return this.TileSet;
   }
 
   private parseDataForLayer() {
@@ -95,7 +108,7 @@ export class Level {
     image.addEventListener('load', async () => {
       console.log('Loaded ' + image.src);
       tileSet.image = await window.createImageBitmap(image);
-    }, false);
+    });
 
     return tileSet;
   }
