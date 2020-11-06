@@ -7,7 +7,8 @@ export class DimensionsComponent extends Component {
     public center = new Point(0, 0);
     private _rotationInDegrees: number = 0;
     private _rotationInRadians: number = 0;
-    public hasCollision;
+    public hasCollision: boolean;
+    public spawnsZombies: boolean = false;
 
     constructor(entityId: EntityId, bounds: Rectangle, hasCollision: boolean = true) {
         super(entityId);

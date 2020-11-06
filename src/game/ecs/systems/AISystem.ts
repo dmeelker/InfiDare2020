@@ -1,4 +1,5 @@
 import { Game } from "../../..";
+import { chance, randomInt } from "../../../utilities/Random";
 import { Point, Vector } from "../../../utilities/Trig";
 import { GameState } from "../../GameState";
 import { BarrierComponent } from "../components/BarrierComponent";
@@ -6,6 +7,7 @@ import { DimensionsComponent } from "../components/DimensionsComponent";
 import { EnemyBehaviour, EnemyComponent, EnemyState } from "../components/EnemyComponent";
 import { LivingComponent } from "../components/LivingComponent";
 import { EntityId } from "../EntityComponentSystem";
+import { createEnemy } from "../EntityFactory";
 import * as CarrierHelper from "./../utilities/CarrierHelper"
 
 const SPEED: number = 40;
@@ -14,9 +16,12 @@ export function update(game: Game) {
     const enemies = game.state.ecs.components.enemyComponents.all;
 
     for (let enemy of enemies) {
-        switch(enemy.behaviour) {
+        switch (enemy.behaviour) {
             case EnemyBehaviour.Normal:
                 executeNormalBehaviour(game, enemy);
+                break;
+            case EnemyBehaviour.Spawner:
+                executeSpawnBehaviour(game, enemy);
                 break;
             case EnemyBehaviour.Ram:
                 executeRamBehaviour(game, enemy);
@@ -45,7 +50,7 @@ function executeNormalBehaviour(game: Game, enemy: EnemyComponent) {
                 if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
                     enemy.targetId = findClosestTarget(game, enemyDimensions.centerLocation);
 
-                    if(!enemy.targetId) {
+                    if (!enemy.targetId) {
                         return;
                     }
                 }
@@ -69,7 +74,7 @@ function executeRamBehaviour(game: Game, enemy: EnemyComponent) {
     if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
         enemy.targetId = findClosestBarrier(game, enemyDimensions.centerLocation);
 
-        if(!enemy.targetId) {
+        if (!enemy.targetId) {
             enemy.behaviour = EnemyBehaviour.Normal;
             return;
         }
@@ -77,6 +82,16 @@ function executeRamBehaviour(game: Game, enemy: EnemyComponent) {
 
     const targetLocation = game.state.ecs.components.dimensionsComponents.get(enemy.targetId).centerLocation;
     moveTowardsTarget(game, enemy, enemyDimensions, targetLocation);
+}
+
+function executeSpawnBehaviour(game: Game, enemy: EnemyComponent) {
+    const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
+
+    if (chance(0.5)) {
+        createEnemy(game, new Point(
+            enemyDimensions.centerLocation.x + randomInt(-20, 20),
+            enemyDimensions.centerLocation.y + randomInt(-20, 20)));
+    }
 }
 
 function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: DimensionsComponent, targetLocation: Point) {
@@ -102,7 +117,7 @@ function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: D
 export function collides(state: GameState, id: EntityId, velocity: Vector): BarrierComponent | undefined {
     const mover = state.ecs.components.dimensionsComponents.get(id);
     const moverBounds = mover.bounds.translate(velocity);
-    
+
     for (var barrier of state.ecs.components.barrierComponents.all) {
         const barrierDimensions = state.ecs.components.dimensionsComponents.get(barrier.entityId);
 

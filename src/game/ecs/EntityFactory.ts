@@ -34,7 +34,7 @@ export function createPlayer(game: Game, location: Point,): EntityId {
 
 export function createEnemy(game: Game, location: Point): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
-    var zombieType = "zombie"+ randomInt(0, 3);
+    var zombieType = "zombie" + randomInt(0, 3);
     var image = game.images.get(zombieType);
 
     const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH);
@@ -56,13 +56,28 @@ export function createRamEnemy(game: Game, location: Point): EntityId {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-    
+
     const enemy = new EnemyComponent(entityId, EnemyBehaviour.Ram);
     enemy.ramForce = 10;
     game.state.ecs.components.enemyComponents.add(enemy);
 
     return entityId;
 }
+
+export function createBoss(game: Game, location: Point): EntityId {
+    const entityId = game.state.ecs.allocateEntityId();
+    var image = game.images.get("boss");
+
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width * 2, image.height * 2), ENEMY_HEALTH * 5);
+    dimensions.hasCollision = false;
+
+    game.state.ecs.components.dimensionsComponents.add(dimensions);
+    game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
+    game.state.ecs.components.enemyComponents.add(new EnemyComponent(entityId, EnemyBehaviour.Spawner));
+
+    return entityId;
+}
+
 
 export function createApple(game: Game, location: Point, vector: Vector) {
     const entityId = game.state.ecs.allocateEntityId();
