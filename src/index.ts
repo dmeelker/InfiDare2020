@@ -74,7 +74,7 @@ export class Game {
         this.mouse = new Mouse(this.view.canvas, this.view.scale);
         await this.loadImages();
         this.level = new Level(this.view.canvas);
-        await this.level.loadLevel('level01.json');
+        await this.level.loadLevel('level02.json');
         this.setupAnimations();
         this.loadFonts();
         this.intializeScreens();

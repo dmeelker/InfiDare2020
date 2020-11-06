@@ -63,17 +63,17 @@ export class Level {
       return false;
     }
 
-    let keys = this.TileIdMap.forEach((tiles, name) => {
+    this.TileIdMap.forEach((tiles, name) => {
       for (let i = 0; i < tiles.length; i++) {
-        let tileId = tiles[i];
+        const tileId = tiles[i];
 
         // Put Default tile here
         if (tileId === 0) {
           continue;
         }
 
-        let x = (i % this.TiledLevel.width) * this.TiledLevel.tilewidth;
-        let y = (Math.floor(i / this.TiledLevel.height)) * this.TiledLevel.tileheight;
+        const x = (i % this.TiledLevel.width) * this.TiledLevel.tilewidth;
+        const y = (Math.floor(i / this.TiledLevel.width)) * this.TiledLevel.tileheight;
 
         // GetTileSet
         const set = this.TileSet.find(t => tileId >= t.first_gid);
@@ -81,8 +81,8 @@ export class Level {
           console.log(this.TileSet, tileId);
           return;
         }
-        let xOnSheet = (tileId - set.first_gid) % set.columns;
-        let yOnSheet = Math.floor((tileId - set.first_gid) / set.columns);
+        const xOnSheet = (tileId - set.first_gid) % set.columns;
+        const yOnSheet = Math.floor((tileId - set.first_gid) / set.columns);
 
         canvas
           .drawImage(
