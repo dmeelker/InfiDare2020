@@ -1,7 +1,7 @@
 import { DimensionsComponent } from "./components/DimensionsComponent";
 import { RenderComponent } from "./components/RenderComponent";
 import { TimedDestroyComponent } from "./components/TimedDestroyComponent";
-import { VelocityComponent } from "./components/VelocityComponent";
+import { ProjectileComponent } from "./components/ProjectileComponent";
 
 export type EntityId = number;
 
@@ -44,13 +44,13 @@ export class ComponentList<TComponent extends Component> {
 export class ComponentStore {
     public readonly renderComponents = new ComponentList<RenderComponent>();
     public readonly dimensionsComponents = new ComponentList<DimensionsComponent>();
-    public readonly velocityComponents = new ComponentList<VelocityComponent>();
+    public readonly projectileComponents = new ComponentList<ProjectileComponent>();
     public readonly timedDestroyComponents = new ComponentList<TimedDestroyComponent>();
 
     private readonly _all = [
         this.renderComponents, 
         this.dimensionsComponents, 
-        this.velocityComponents, 
+        this.projectileComponents, 
         this.timedDestroyComponents];
 
     public removeComponentsForEntity(entityId: EntityId) {

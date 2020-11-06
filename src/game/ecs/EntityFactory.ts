@@ -2,7 +2,7 @@ import { Game } from "../..";
 import { Point, Rectangle, Vector } from "../../utilities/Trig";
 import { DimensionsComponent } from "./components/DimensionsComponent";
 import { RenderComponent, StaticImageProvider } from "./components/RenderComponent";
-import { VelocityComponent } from "./components/VelocityComponent";
+import { ProjectileComponent } from "./components/ProjectileComponent";
 import { EntityId } from "./EntityComponentSystem";
 
 export function createPlayer(game: Game, location: Point,): EntityId {
@@ -27,7 +27,7 @@ export function createApple(game: Game, location: Point, vector: Vector) {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-    game.state.ecs.components.velocityComponents.add(new VelocityComponent(entityId, vector));
+    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector));
 
     return entityId;
 }

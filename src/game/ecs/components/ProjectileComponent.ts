@@ -1,7 +1,7 @@
 import { Vector } from "../../../utilities/Trig";
 import { Component, EntityId } from "../EntityComponentSystem";
 
-export class VelocityComponent extends Component {
+export class ProjectileComponent extends Component {
     public vector: Vector;
 
     constructor(entityId: EntityId, vector: Vector) {

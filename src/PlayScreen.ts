@@ -3,7 +3,7 @@ import { IScreen } from "./utilities/ScreenManager";
 import { Timer } from "./utilities/Timer";
 import { DomUiEventProvider, Ui } from "./utilities/Ui";
 import * as RenderSystem from "./game/ecs/systems/RenderSystem";
-import * as MovementSystem from "./game/ecs/systems/MovementSystem";
+import * as ProjectileSystem from "./game/ecs/systems/ProjectileSystem";
 import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import { Game } from ".";
@@ -36,7 +36,7 @@ export class PlayScreen implements IScreen {
     update(time: FrameTime): void {
         this.handleInput(time);
 
-        MovementSystem.update(this._game);
+        ProjectileSystem.update(this._game);
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
         this._game.state.ecs.removeDisposedEntities();
