@@ -68,7 +68,7 @@ export function createBoss(game: Game, location: Point): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
     var image = game.images.get("boss");
 
-    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width * 2, image.height * 2), ENEMY_HEALTH * 5);
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH * 5);
     dimensions.hasCollision = false;
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
