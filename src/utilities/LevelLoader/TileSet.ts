@@ -8,5 +8,7 @@ export interface TileSet {
   source: string,
   source_width: number,
   source_height: number,
-  image: ImageBitmap,
+  image?: ImageBitmap,
+  first_gid:number,
+  image_tag: HTMLImageElement,
 }

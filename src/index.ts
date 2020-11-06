@@ -53,7 +53,7 @@ export class Game {
     public readonly input = new InputProvider(this.keyboard, this.gamepadPoller);
     public readonly messageBus = new MessageBus();
 
-    public readonly leveLoader = new LevelLoader();
+    public level: Level;
 
     public introScreen: IntroScreen;
     public playScreen: PlayScreen;
@@ -70,9 +70,6 @@ export class Game {
     }
 
     private async initialize() {
-
-        this.leveLoader.loadLevel('test.json')
-
         this.setupView();
         this.mouse = new Mouse(this.view.canvas, this.view.scale);
         await this.loadImages();
@@ -80,6 +77,9 @@ export class Game {
         this.loadFonts();
         this.intializeScreens();
         this.initializeKeyBindings();
+
+        this.level = new Level(this.view.canvas);
+        await this.level.loadLevel('test.json');
     }
 
     private setupView() {
