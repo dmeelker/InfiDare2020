@@ -101,7 +101,13 @@ export class Level {
       throw "no level loaded joh!";
     }
 
+    if (!this.TiledLevel.layers[idx] || this.TiledLevel.layers[idx].data.length < 1 ){
+      return;
+    }
+
     let raw = window.atob(this.TiledLevel.layers[idx].data);
+    if(!raw || raw.length <1 )
+      return;
     var array = new Uint8Array(new ArrayBuffer(raw.length));
     for (let i = 0; i < raw.length; i++) {
       array[i] = raw.charCodeAt(i);

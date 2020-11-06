@@ -201,7 +201,7 @@ export class PlayScreen implements IScreen {
     spawnPaper() {
         for (let x = 0; x < 5; x++) {
             for (let y = 0; y < 3; y++) {
-                let location = new Point((x * 30) + 150, y * 30);
+                let location = new Point((x * 30) + 200, y * 30 + 75);
 
                 createToiletPaper(this._game, location);
             }
