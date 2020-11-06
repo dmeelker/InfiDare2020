@@ -8,6 +8,7 @@ import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import * as AISystem from "./game/ecs/systems/AISystem"
 import * as CarrierRenderSystem from "./game/ecs/systems/CarrierRenderSystem"
+import * as CarrierHelper from "./game/ecs/utilities/CarrierHelper"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
@@ -149,55 +150,18 @@ export class PlayScreen implements IScreen {
     }
 
     private interact() {
-        const state = this._game.state;
-        const ecs = state.ecs;
-
-        const playerDimensions = ecs.components.dimensionsComponents.get(this._game.state.playerId); 
-        const currentCarrier = ecs.components.carrierComponents.get(this._game.state.playerId);
+        const currentCarrier = this._game.state.ecs.components.carrierComponents.get(this._game.state.playerId);
         
         if(currentCarrier) {
-            ecs.components.import(currentCarrier.carriedEntityComponents);
-            const carryableDimensions = ecs.components.dimensionsComponents.get(currentCarrier.carriedEntityId);
-            const carryableHalfSize = carryableDimensions.bounds.halfSize();
-
-            carryableDimensions.bounds.location = new Point(playerDimensions.centerLocation.x - carryableHalfSize.width, playerDimensions.bounds.y + playerDimensions.bounds.height); 
-
-            ecs.components.carrierComponents.remove(state.playerId);
+            CarrierHelper.dropCarriedObject(this._game, this._game.state.playerId);
         } else {
-            const carryable = this.findNearestCarryable();
+            const carryable = CarrierHelper.findNearestCarryable(this._game, this._game.state.playerId);
             if(carryable) {
-                const carryableImage = ecs.components.renderComponents.get(carryable.entityId);
-
-                const carryableComponents = ecs.components.exportSingleEntity(carryable.entityId);
-                ecs.components.removeComponentsForEntity(carryable.entityId);
-
-                let carrier = new CarrierComponent(state.playerId);
-                carrier.carriedEntityId = carryable.entityId;
-                carrier.carriedEntityComponents = carryableComponents;
-                carrier.image = carryableImage.image.getImage();
-
-                ecs.components.carrierComponents.add(carrier);
+                CarrierHelper.carryObject(this._game, this._game.state.playerId, carryable.entityId);
             }
         }
     }
-
-    private findNearestCarryable(): CarryableComponent {
-        const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
-        var characterBounds = dimensions.bounds.addBorder(10);
-
-        const carryableComponents = this._game.state.ecs.components.carryableComponents.all;
-
-        for(let carryable of carryableComponents) {
-            var carryableDimensions = this._game.state.ecs.components.dimensionsComponents.get(carryable.entityId);
-
-            if(characterBounds.overlaps(carryableDimensions.bounds)) {
-                return carryable;
-            }
-        }
-
-        return null;
-    }
-
+    
     private checkPlayerDestroyed() {
         const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
 
