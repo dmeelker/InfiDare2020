@@ -1,5 +1,5 @@
 import { DimensionsComponent } from "./components/DimensionsComponent";
-import { RenderComponent } from "./components/RenderComponent";
+import { RenderComponent, MovingRenderComponent } from "./components/RenderComponent";
 import { TimedDestroyComponent } from "./components/TimedDestroyComponent";
 import { ProjectileComponent } from "./components/ProjectileComponent";
 import { CarryableComponent } from "./components/CarryableComponent";
@@ -50,6 +50,7 @@ export class ComponentList<TComponent extends Component> {
 
 export class ComponentStore {
     public readonly renderComponents = new ComponentList<RenderComponent>();
+    public readonly movingRenderComponents = new ComponentList<MovingRenderComponent>();
     public readonly dimensionsComponents = new ComponentList<DimensionsComponent>();
     public readonly projectileComponents = new ComponentList<ProjectileComponent>();
     public readonly timedDestroyComponents = new ComponentList<TimedDestroyComponent>();
@@ -62,6 +63,7 @@ export class ComponentStore {
 
     private readonly _all = [
         this.renderComponents,
+        this.movingRenderComponents,
         this.dimensionsComponents,
         this.projectileComponents,
         this.timedDestroyComponents,

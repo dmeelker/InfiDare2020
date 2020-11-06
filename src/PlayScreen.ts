@@ -24,6 +24,7 @@ import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
 import { GameOver } from "./Scenarios/GameStart";
 import { AudioComponent } from "./game/ecs/components/AudioComponent";
+import { Direction } from "./game/ecs/components/RenderComponent";
 
 enum GameState {
     Preparing,
@@ -232,17 +233,22 @@ export class PlayScreen implements IScreen {
         if (this._game.input.isButtonDown(Keys.Sprint)) {
             speed = this._playerRunSpeed;
         }
+
         if (this._game.input.isButtonDown(Keys.MoveLeft)) {
             velocity = velocity.add(new Vector(-time.calculateMovement(speed), 0));
+            this._game.state.ecs.components.movingRenderComponents.get(this._game.state.playerId).setDirection(Direction.Left);
         }
         if (this._game.input.isButtonDown(Keys.MoveRight)) {
             velocity = velocity.add(new Vector(time.calculateMovement(speed), 0));
+            this._game.state.ecs.components.movingRenderComponents.get(this._game.state.playerId).setDirection(Direction.Right);
         }
         if (this._game.input.isButtonDown(Keys.MoveUp)) {
             velocity = velocity.add(new Vector(0, -time.calculateMovement(speed)));
+            this._game.state.ecs.components.movingRenderComponents.get(this._game.state.playerId).setDirection(Direction.Up);
         }
         if (this._game.input.isButtonDown(Keys.MoveDown)) {
             velocity = velocity.add(new Vector(0, time.calculateMovement(speed)));
+            this._game.state.ecs.components.movingRenderComponents.get(this._game.state.playerId).setDirection(Direction.Down);
         }
 
         if (!AISystem.collides(this._game.state, this._game.state.playerId, velocity)) {

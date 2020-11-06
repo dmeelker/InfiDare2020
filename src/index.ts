@@ -94,7 +94,10 @@ export class Game {
     }
 
     private async loadImages() {
-        await this.images.load("player", "gfx/guy.png");
+        await this.images.load("playerup", "gfx/heroup.png");
+        await this.images.load("playerdown", "gfx/herodown.png");
+        await this.images.load("playerright", "gfx/heroright.png");
+        await this.images.load("playerleft", "gfx/heroleft.png");
         await this.images.load("zombie0", "gfx/zombie0.png");
         await this.images.load("zombie1", "gfx/zombie1.png");
         await this.images.load("zombie2", "gfx/zombie2.png");

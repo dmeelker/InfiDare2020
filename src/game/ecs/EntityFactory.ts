@@ -1,7 +1,7 @@
 import { Game } from "../..";
 import { Point, Rectangle, Vector } from "../../utilities/Trig";
 import { DimensionsComponent } from "./components/DimensionsComponent";
-import { RenderComponent, StaticImageProvider } from "./components/RenderComponent";
+import { RenderComponent, StaticImageProvider, MovingRenderComponent, Direction } from "./components/RenderComponent";
 import { ProjectileComponent } from "./components/ProjectileComponent";
 import { EntityId } from "./EntityComponentSystem";
 import { CarryableComponent } from "./components/CarryableComponent";
@@ -17,13 +17,17 @@ const ENEMY_HEALTH: number = 4;
 
 export function createPlayer(game: Game, location: Point,): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
-    const image = game.images.get("player");
+    var images = new Map<Direction, ImageBitmap>();
+    images.set(Direction.Up, game.images.get("playerup"));
+    images.set(Direction.Down, game.images.get("playerdown"));
+    images.set(Direction.Right, game.images.get("playerright"));
+    images.set(Direction.Left, game.images.get("playerleft"));
 
-    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), PLAYER_HEALTH);
+    var boundbox = images.get(Direction.Left);
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, boundbox.width as number, boundbox.height as number), PLAYER_HEALTH);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
-    game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-
+    game.state.ecs.components.movingRenderComponents.add(new MovingRenderComponent(entityId, images));
     return entityId;
 }
 

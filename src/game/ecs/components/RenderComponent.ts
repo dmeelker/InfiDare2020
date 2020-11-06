@@ -24,3 +24,24 @@ export class RenderComponent extends Component {
         this.image = image;
     }
 }
+
+export class MovingRenderComponent extends RenderComponent {
+    private readonly _images: Map<Direction, ImageBitmap>;
+
+    public constructor(entityId: EntityId, images: Map<Direction, ImageBitmap>) {
+        super(entityId, new StaticImageProvider(images.get(Direction.Down)));
+        console.log("hallo", images);
+        this._images = images;
+    }
+
+    public setDirection(direction: Direction) {
+        this.image = new StaticImageProvider(this._images.get(direction));
+    }
+}
+
+export enum Direction {
+    Up,
+    Down,
+    Left,
+    Right
+}

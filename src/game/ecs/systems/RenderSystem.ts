@@ -7,6 +7,10 @@ export function render(ecs: EntityComponentSystem, context: CanvasRenderingConte
         const dimensions = ecs.components.dimensionsComponents.get(renderComponent.entityId);
         updateComponent(renderComponent, dimensions, context);
     }
+    for(let renderComponent of ecs.components.movingRenderComponents.all) {
+        const dimensions = ecs.components.dimensionsComponents.get(renderComponent.entityId);
+        updateComponent(renderComponent, dimensions, context);
+    }
 }
 
 function updateComponent(renderComponent: RenderComponent, dimensionsComponent: DimensionsComponent, context: CanvasRenderingContext2D) {
