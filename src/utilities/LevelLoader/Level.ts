@@ -52,7 +52,7 @@ export class Level {
         return;
       }
       let xOnSheet = (tileId - set.first_gid) % set.columns;
-      let yOnSheet = Math.floor((tileId - set.first_gid) / (set.tilecount / set.columns));
+      let yOnSheet = Math.floor((tileId - set.first_gid)  / set.columns);
 
       canvas
         .drawImage(
@@ -84,7 +84,7 @@ export class Level {
       this.TileSet.push(tileSet);
 
       //Sorting is important for draw call, see line 39
-      this.TileSet.sort((t, o) => t.first_gid - o.first_gid);
+      this.TileSet.sort((t, o) => o.first_gid - t.first_gid);
     }
 
     return this.TileSet;
