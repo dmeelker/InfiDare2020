@@ -25,10 +25,10 @@ export class EnemyComponent extends Component {
     constructor(entityId: EntityId, behaviour: EnemyBehaviour = EnemyBehaviour.Normal) {
         super(entityId);
         this.behaviour = behaviour;
-        this.baseSpeed = randomInt(25, 75);
+        this.baseSpeed = randomInt(10, 100);
     }
 
     public getSpeed() {
-        return this.baseSpeed + (this.state == EnemyState.MovingToPos ? 15 : 0);
+        return this.baseSpeed + (this.state == EnemyState.MovingToPos ? 25 : 0);
     }
 }
