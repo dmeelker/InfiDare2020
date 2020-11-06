@@ -13,19 +13,6 @@ export function update(game: Game) {
 
         move(game.time, projectileComponent, projectile);
         checkForCollisions(game, projectileComponent, projectile);
-
-        // for (let enemy of game.state.ecs.components.enemyComponents.all) {
-        //     const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
-        //     if (enemyDimensions.bounds.overlaps(projectile.bounds)) {
-        //         game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
-        //         enemyDimensions.hp -= 1;
-        //         if (enemyDimensions.hp <= 0) {
-        //             dropCarriedObject(game, enemy.entityId);
-        //             game.state.ecs.disposeEntity(enemy.entityId);
-        //         }
-        //         break;
-        //     }
-        // }
     }
 }
 
@@ -35,12 +22,13 @@ function move(time: FrameTime, projectileComponent: ProjectileComponent, dimensi
     dimensionsComponent.rotationInDegrees = (time.currentTime - projectileComponent.creationTime) * projectileComponent.rotationSpeed;
 }
 
-function checkForCollisions(game: Game, projectileComponent: ProjectileComponent, projectile: DimensionsComponent) {
+function checkForCollisions(game: Game, projectileComponent: ProjectileComponent, projectileDimensions: DimensionsComponent) {
     for (let enemy of game.state.ecs.components.enemyComponents.all) {
         const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
-        if (enemyDimensions.bounds.overlaps(projectile.bounds)) {
+        if (enemyDimensions.bounds.overlaps(projectileDimensions.bounds)) {
+            const projectile = game.state.ecs.components.projectileComponents.get(projectileDimensions.entityId);
+            enemyDimensions.hp -= projectile.damage;
             game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
-            enemyDimensions.hp -= 1;
             if (enemyDimensions.hp <= 0) {
                 game.messageBus.raise(Events.EnemyKilled, new EnemyKilledEventArgs());
                 dropCarriedObject(game, enemy.entityId);
@@ -52,7 +40,7 @@ function checkForCollisions(game: Game, projectileComponent: ProjectileComponent
 }
 
 function dropCarriedObject(game: Game, entityId: EntityId) {
-    if(CarrierHelper.isCarryingObject(game, entityId)) {
+    if (CarrierHelper.isCarryingObject(game, entityId)) {
         CarrierHelper.dropCarriedObject(game, entityId);
     }
 }
