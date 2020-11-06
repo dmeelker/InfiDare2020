@@ -49,8 +49,7 @@ export function createEnemy(game: Game, location: Point): EntityId {
 
 export function createRamEnemy(game: Game, location: Point): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
-    var zombieType = "zombie"+ randomInt(0, 3);
-    var image = game.images.get(zombieType);
+    var image = game.images.get("ramzombie");
 
     const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH);
     dimensions.hasCollision = false;
