@@ -166,32 +166,31 @@ export class PlayScreen implements IScreen {
         } else {
             const carryable = this.findNearestCarryable();
             if(carryable) {
-                if(!ecs.components.carrierComponents.get(state.playerId)) {
-                    const carryableImage = ecs.components.renderComponents.get(carryable.entityId);
+                const carryableImage = ecs.components.renderComponents.get(carryable.entityId);
 
-                    const carryableComponents = ecs.components.exportSingleEntity(carryable.entityId);
-                    ecs.components.removeComponentsForEntity(carryable.entityId);
+                const carryableComponents = ecs.components.exportSingleEntity(carryable.entityId);
+                ecs.components.removeComponentsForEntity(carryable.entityId);
 
-                    let carrier = new CarrierComponent(state.playerId);
-                    carrier.carriedEntityId = carryable.entityId;
-                    carrier.carriedEntityComponents = carryableComponents;
-                    carrier.image = carryableImage.image.getImage();
+                let carrier = new CarrierComponent(state.playerId);
+                carrier.carriedEntityId = carryable.entityId;
+                carrier.carriedEntityComponents = carryableComponents;
+                carrier.image = carryableImage.image.getImage();
 
-                    ecs.components.carrierComponents.add(carrier);
-                }
+                ecs.components.carrierComponents.add(carrier);
             }
         }
     }
 
     private findNearestCarryable(): CarryableComponent {
         const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
+        var characterBounds = dimensions.bounds.addBorder(10);
 
         const carryableComponents = this._game.state.ecs.components.carryableComponents.all;
 
         for(let carryable of carryableComponents) {
             var carryableDimensions = this._game.state.ecs.components.dimensionsComponents.get(carryable.entityId);
 
-            if(dimensions.bounds.overlaps(carryableDimensions.bounds)) {
+            if(characterBounds.overlaps(carryableDimensions.bounds)) {
                 return carryable;
             }
         }
