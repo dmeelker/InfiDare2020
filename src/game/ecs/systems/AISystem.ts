@@ -8,7 +8,7 @@ const SPEED: number = 20;
 export function update(game: Game) {
     const enemies = game.state.ecs.components.enemyComponents.all;
 
-    for(let enemy of enemies) {
+    for (let enemy of enemies) {
         const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId);
         const playerDimensions = game.state.ecs.components.dimensionsComponents.get(game.state.playerId);
 
@@ -28,7 +28,7 @@ export function canMove(state: GameState, id: EntityId, velocity: Vector): boole
     const mover = state.ecs.components.dimensionsComponents.get(id);
     const targetBounds = mover.bounds.translate(velocity);
     for (var component of state.ecs.components.dimensionsComponents.all) {
-        if (component.bounds.overlaps(targetBounds) && component.entityId != mover.entityId) {
+        if (component.hasCollision && component.bounds.overlaps(targetBounds) && component.entityId != mover.entityId) {
             return false;
         }
     }

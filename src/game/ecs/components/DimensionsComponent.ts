@@ -7,11 +7,13 @@ export class DimensionsComponent extends Component {
     public center = new Point(0, 0);
     private _rotationInDegrees: number = 0;
     private _rotationInRadians: number = 0;
+    public hasCollision;
 
-    constructor(entityId: EntityId, bounds: Rectangle) {
+    constructor(entityId: EntityId, bounds: Rectangle, hasCollision: boolean = true) {
         super(entityId);
         this.bounds = bounds;
         this.center = new Point(bounds.width / 2, bounds.height / 2);
+        this.hasCollision = hasCollision;
     }
 
     public get rotationInDegrees(): number {
