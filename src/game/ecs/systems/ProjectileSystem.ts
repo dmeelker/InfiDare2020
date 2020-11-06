@@ -9,14 +9,13 @@ export function update(game: Game) {
         const projectile = game.state.ecs.components.dimensionsComponents.get(projectileComponent.entityId);
 
         updateComponent(game.time, projectileComponent, projectile);
-        for (let enemyId of game.state.enemies) {
-            const enemy = game.state.ecs.components.dimensionsComponents.get(enemyId) as LivingComponent;
-            if (enemy.bounds.overlaps(projectile.bounds)) {
+        for (let enemy of game.state.ecs.components.enemyComponents.all) {
+            const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
+            if (enemyDimensions.bounds.overlaps(projectile.bounds)) {
                 game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
-                enemy.hp -= 1;
-                if (enemy.hp <= 0) {
-                    game.state.ecs.components.removeComponentsForEntity(enemy.entityId);
-                    game.state.enemies = game.state.enemies.filter(id => id != enemy.entityId);
+                enemyDimensions.hp -= 1;
+                if (enemyDimensions.hp <= 0) {
+                    game.state.ecs.disposeEntity(enemy.entityId);
                 }
                 break;
             }

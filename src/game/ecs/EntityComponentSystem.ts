@@ -4,6 +4,7 @@ import { TimedDestroyComponent } from "./components/TimedDestroyComponent";
 import { ProjectileComponent } from "./components/ProjectileComponent";
 import { CarryableComponent } from "./components/CarryableComponent";
 import { CarrierComponent } from "./components/CarrierComponent";
+import { EnemyComponent } from "./components/EnemyComponent";
 
 export type EntityId = number;
 
@@ -50,6 +51,8 @@ export class ComponentStore {
     public readonly timedDestroyComponents = new ComponentList<TimedDestroyComponent>();
     public readonly carrierComponents = new ComponentList<CarrierComponent>();
     public readonly carryableComponents = new ComponentList<CarryableComponent>();
+    public readonly enemyComponents = new ComponentList<EnemyComponent>();
+    
 
     private readonly _all = [
         this.renderComponents,
@@ -57,7 +60,8 @@ export class ComponentStore {
         this.projectileComponents,
         this.timedDestroyComponents,
         this.carrierComponents,
-        this.carryableComponents];
+        this.carryableComponents,
+        this.enemyComponents];
 
     public removeComponentsForEntity(entityId: EntityId) {
         this._all.forEach(store => store.remove(entityId));

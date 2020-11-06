@@ -6,6 +6,7 @@ import { ProjectileComponent } from "./components/ProjectileComponent";
 import { EntityId } from "./EntityComponentSystem";
 import { CarryableComponent } from "./components/CarryableComponent";
 import { LivingComponent } from "./components/LivingComponent";
+import { EnemyComponent } from "./components/EnemyComponent";
 
 const PLAYER_HEALTH: number = 100;
 const ENEMY_HEALTH: number = 5;
@@ -30,7 +31,8 @@ export function createEnemy(game: Game, location: Point): EntityId {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-
+    game.state.ecs.components.enemyComponents.add(new EnemyComponent(entityId));
+    
     return entityId;
 }
 

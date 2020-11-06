@@ -56,7 +56,7 @@ export class PlayScreen implements IScreen {
         EntityCleanupSystem.update(this._game);
         this._game.state.ecs.removeDisposedEntities();
 
-        if (this._game.state.enemies.length === 0) {
+        if (this._game.state.ecs.components.enemyComponents.count === 0) {
             if (this._waveTimer.update(time.currentTime)) {
                 this._waveTimer.reset(5_000);
                 this.spawnWave();
@@ -106,7 +106,7 @@ export class PlayScreen implements IScreen {
 
     spawnWave() {
         for (let i = 0; i < this._waveNumber + 2; i++) {
-            this._game.state.enemies.push(createEnemy(this._game, new Point(50 * i, 250)));
+            createEnemy(this._game, new Point(50 * i, 250));
         }
         this._waveNumber++;
     }
