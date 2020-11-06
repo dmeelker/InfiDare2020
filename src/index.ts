@@ -15,6 +15,7 @@ import { Keyboard } from "./utilities/Keyboard";
 import { InputProvider, Keys } from "./utilities/InputProvider";
 import { GamepadPoller } from "./utilities/GamepadPoller";
 import { Mouse } from "./utilities/Mouse";
+import { MessageBus } from "./Events/MessageBus";
 
 export class ViewInfo {
     public canvas: HTMLCanvasElement;
@@ -49,6 +50,7 @@ export class Game {
     public readonly keyboard = new Keyboard();
     public readonly gamepadPoller = new GamepadPoller();
     public readonly input = new InputProvider(this.keyboard, this.gamepadPoller);
+    public readonly messageBus = new MessageBus();
 
     public introScreen: IntroScreen;
     public playScreen: PlayScreen;
@@ -115,6 +117,8 @@ export class Game {
     }
 
     private intializeScreens() {
+        var messageBus = new MessageBus();
+
         this.introScreen = new IntroScreen(this);
         this.playScreen = new PlayScreen(this);
         this.screenManager = new ScreenManager(this.playScreen);

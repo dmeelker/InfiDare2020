@@ -15,6 +15,10 @@ import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper } from "./game/ecs/EntityFactory";
 import { randomArrayElement } from "./utilities/Random";
+import * as Events from "./Events/Events";
+import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
+import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
+import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
 
 enum GameState {
     Preparing,
@@ -28,6 +32,7 @@ export class PlayScreen implements IScreen {
     private readonly _uiInputProvider;
 
     private _pause = false;
+    private _firstBlood = true;
     private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
     private _waveTimer: Timer;
@@ -37,6 +42,7 @@ export class PlayScreen implements IScreen {
     private _stateEnterTime = 0;
     private _prepareTime = 10000;
     private _lostTime = 5000;
+    private _activeScenario: BaseScenario;
 
     public constructor(game: Game) {
         this._game = game;
@@ -47,6 +53,8 @@ export class PlayScreen implements IScreen {
     onActivate(): void {
         this._uiInputProvider.hook();
         this.resetGame();
+        this._game.messageBus.subscribe(Events.Events.EnemyKilled, () => this.handleEnemyKilled());
+        this._activeScenario = new GameStart();
     }
 
     onDeactivate(): void {
@@ -56,7 +64,7 @@ export class PlayScreen implements IScreen {
     update(time: FrameTime): void {
         this.handleInput(time);
 
-        if (this._pause) {
+        if (this._pause || this._activeScenario != null) {
             return;
         }
 
@@ -96,13 +104,21 @@ export class PlayScreen implements IScreen {
         }
     }
 
+    handleEnemyKilled() 
+    {
+        if (this._firstBlood) {
+            this._activeScenario = new FirstEnemyKilled();
+            this._firstBlood = false;
+        }
+    }
+
     render(renderContext: CanvasRenderingContext2D): void {
         this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         CarrierRenderSystem.render(this._game, renderContext);
 
-        if (this._activeDialog != "") {
-            DialogSystem.render(["Hallo!", "2e Regel :O", "3e Regel :D:D:D"], this._game, renderContext);
+        if(this._activeScenario != null) {
+            DialogSystem.render(this._activeScenario.current(), this._game, renderContext);
         }
 
         if(this._state == GameState.Lost) {
@@ -161,8 +177,15 @@ export class PlayScreen implements IScreen {
         const player = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
 
         if (this._game.input.wasButtonPressedInFrame(Keys.Pause)) {
-            this._activeDialog = "Hallo!";
             this._pause = !this._pause;
+        }
+
+        if(this._activeScenario != null) {
+            if (this._game.input.wasButtonPressedInFrame(Keys.Use)) {
+                if (this._activeScenario.finished()) {
+                    this._activeScenario = null;
+                }
+            }
         }
 
         // ignore movement input when the game is paused.
