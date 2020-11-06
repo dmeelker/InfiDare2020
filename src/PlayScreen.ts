@@ -59,6 +59,7 @@ export class PlayScreen implements IScreen {
         this.resetGame();
         this._game.messageBus.subscribe(Events.Events.EnemyKilled, () => this.handleEnemyKilled());
         this._activeScenario = new GameStart();
+
     }
 
     onDeactivate(): void {
@@ -214,7 +215,7 @@ export class PlayScreen implements IScreen {
         }
 
         if (this._activeScenario != null) {
-            if (this._game.input.wasButtonPressedInFrame(Keys.Use)) {
+            if (this._game.input.wasButtonPressedInFrame(Keys.Use) || this._game.mouse.Button1Down) {
                 if (this._activeScenario.finished()) {
                     this._activeScenario = null;
                 }

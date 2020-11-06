@@ -22,6 +22,10 @@ export function findNearestCarryable(game: Game, carrierEntityId: EntityId): Car
 }
 
 export function carryObject(game: Game, carrierEntityId: EntityId, carryableEntityId: EntityId) {
+    if(isCarryingObject(game, carrierEntityId)) {
+        return;
+    }
+
     const ecs = game.state.ecs;
     const carryable = ecs.components.carryableComponents.get(carryableEntityId);
 
@@ -39,6 +43,10 @@ export function carryObject(game: Game, carrierEntityId: EntityId, carryableEnti
 }
 
 export function dropCarriedObject(game: Game, carrierEntityId: EntityId) {
+    if(!isCarryingObject(game, carrierEntityId)) {
+        return;
+    }
+
     const ecs = game.state.ecs;
     const carrier = ecs.components.carrierComponents.get(carrierEntityId);
     const carrierDimensions = ecs.components.dimensionsComponents.get(carrierEntityId);
@@ -49,7 +57,7 @@ export function dropCarriedObject(game: Game, carrierEntityId: EntityId) {
 
     carryableDimensions.bounds.location = new Point(carrierDimensions.centerLocation.x - carryableHalfSize.width, carrierDimensions.bounds.y + carrierDimensions.bounds.height); 
 
-    ecs.components.carrierComponents.remove(game.state.playerId);
+    ecs.components.carrierComponents.remove(carrierEntityId);
 }
 
 export function isCarryingObject(game: Game, carrierEntityId: EntityId): boolean {
