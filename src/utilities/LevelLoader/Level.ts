@@ -52,13 +52,13 @@ export class Level {
         return;
       }
       let xOnSheet = (tileId - set.first_gid) % set.columns;
-      let yOnSheet = Math.floor((tileId - set.first_gid) / (set.tilecount / set.columns))
+      let yOnSheet = Math.floor((tileId - set.first_gid) / (set.tilecount / set.columns));
 
       canvas
         .drawImage(
           set.image_tag,
-          xOnSheet,
-          yOnSheet,
+          xOnSheet * set.tilewidth,
+          yOnSheet * set.tileheight,
           set.tilewidth,
           set.tileheight,
           x, y, this.TiledLevel.tilewidth, this.TiledLevel.tileheight);
