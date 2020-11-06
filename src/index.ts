@@ -22,7 +22,7 @@ export class ViewInfo {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public size: Rectangle;
-  public scale: number = 1;
+  public scale: number = 2;
 
   public levelToScreenCoordinates(levelCoordinates: Point): Point {
     return new Point(
