@@ -15,7 +15,7 @@ import * as FallingObjectSystem from "./game/ecs/systems/FallingObjectSystem";
 import * as FallingObjectShadowRenderer from "./game/ecs/systems/FallingObjectShadowRenderer";
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
-import { Point, Vector } from "./utilities/Trig";
+import { Point, Rectangle, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createBoss, createDuck, createRamEnemy, createBanana } from "./game/ecs/EntityFactory";
 import { randomArrayElement, randomInt } from "./utilities/Random";
 import * as Events from "./Events/Events";
@@ -213,20 +213,32 @@ export class PlayScreen implements IScreen {
     }
 
     private spawnWave() {
+        const spawnArea = new Rectangle(
+            this._game.view.size.width - 100, 100,
+            0, this._game.view.size.height
+        );
+        
         this._waveNumber++;
 
         let num_zombies = 2 * this._waveNumber;
         if (this._waveNumber % 5 === 0) {
             num_zombies /= 2;
             for (let i = 0; i < this._waveNumber / 5; i++) {
-                createBoss(this._game, new Point(randomInt(1, 400), randomInt(500, 600)));
+                createBoss(this._game, this.randomLocationInArea(spawnArea));
             }
         }
 
         for (let i = 0; i < num_zombies; i++) {
             const spawner = this.getRandomEnemyFactory();
-            spawner(this._game, new Point(randomInt(1, 400), randomInt(550, 650)));
+            spawner(this._game, this.randomLocationInArea(spawnArea));
         }
+    }
+
+    private randomLocationInArea(area: Rectangle): Point {
+        return new Point(
+            randomInt(area.x, area.x + area.width),
+            randomInt(area.y, area.y + area.height)
+        );
     }
 
     private getRandomEnemyFactory(): EnemyFactory {
