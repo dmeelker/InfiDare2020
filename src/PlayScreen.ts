@@ -223,9 +223,6 @@ export class PlayScreen implements IScreen {
         this.spawnBoxes();
         this.spawnPaper();
 
-        createShoppingCart(this._game, new Point(50, 200));
-        createShoppingCart(this._game, new Point(300, 100));
-
         gameState.playerId = createPlayer(this._game, new Point(200, 225));
         this.spawnWave();
     }
