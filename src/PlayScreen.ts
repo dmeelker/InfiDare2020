@@ -16,7 +16,7 @@ import * as FallingObjectShadowRenderer from "./game/ecs/systems/FallingObjectSh
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox } from "./game/ecs/EntityFactory";
+import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createRamEnemy } from "./game/ecs/EntityFactory";
 import { randomArrayElement, randomInt } from "./utilities/Random";
 import * as Events from "./Events/Events";
 import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
@@ -25,11 +25,22 @@ import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart
 import { GameOver } from "./Scenarios/GameStart";
 import { AudioComponent } from "./game/ecs/components/AudioComponent";
 import { Direction } from "./game/ecs/components/RenderComponent";
+import { EnemyBehaviour } from "./game/ecs/components/EnemyComponent";
+import { EntityId } from "./game/ecs/EntityComponentSystem";
 
 enum GameState {
     Preparing,
     Defending,
     Lost
+}
+
+type EnemyFactory =  (game: Game, location: Point) => EntityId;
+
+class EnemyFactoryWithWeight {
+    constructor(public factory: EnemyFactory, public weight: number)
+    {
+
+    }
 }
 
 export class PlayScreen implements IScreen {
@@ -193,11 +204,41 @@ export class PlayScreen implements IScreen {
         this.spawnWave();
     }
 
-    spawnWave() {
+    private spawnWave() {
         for (let i = 0; i < 2 * (this._waveNumber + 2); i++) {
-            createEnemy(this._game, new Point(randomInt(1, 400), randomInt(550, 650)));
+            const spawner = this.getRandomEnemyFactory();
+            spawner(this._game, new Point(randomInt(1, 400), randomInt(550, 650)));
         }
         this._waveNumber++;
+    }
+
+    private getRandomEnemyFactory(): EnemyFactory {
+        const availableFactories = this.getAvailableEnemyFactories();
+        const totalWeight = availableFactories.map(f => f.weight).reduce((v1,v2) => v1 + v2);
+        const random = randomInt(0, totalWeight);
+        let accumulator = 0;
+        
+        for(let factory of availableFactories) {
+            accumulator += factory.weight;
+
+            if(random < accumulator) {
+                return factory.factory;
+            }
+        }
+
+        return availableFactories[availableFactories.length - 1].factory;
+    }
+
+    private getAvailableEnemyFactories(): Array<EnemyFactoryWithWeight> {
+        const factories = [
+            new EnemyFactoryWithWeight(createEnemy, 100)
+        ];
+
+        if(this._waveNumber > 5) {
+            factories.push(new EnemyFactoryWithWeight(createRamEnemy, 10));
+        }
+        
+        return factories;
     }
 
     spawnPaper() {

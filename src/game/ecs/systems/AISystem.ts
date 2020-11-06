@@ -1,8 +1,9 @@
 import { Game } from "../../..";
 import { Point, Vector } from "../../../utilities/Trig";
 import { GameState } from "../../GameState";
+import { BarrierComponent } from "../components/BarrierComponent";
 import { DimensionsComponent } from "../components/DimensionsComponent";
-import { EnemyComponent, EnemyState } from "../components/EnemyComponent";
+import { EnemyBehaviour, EnemyComponent, EnemyState } from "../components/EnemyComponent";
 import { LivingComponent } from "../components/LivingComponent";
 import { EntityId } from "../EntityComponentSystem";
 import * as CarrierHelper from "./../utilities/CarrierHelper"
@@ -13,42 +14,69 @@ export function update(game: Game) {
     const enemies = game.state.ecs.components.enemyComponents.all;
 
     for (let enemy of enemies) {
-        const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
-
-        switch (enemy.state) {
-            case EnemyState.MovingToPos:
-                if (enemy.targetPos.distanceTo(enemyDimensions.centerLocation) < 10) {
-                    enemy.targetPos = null;
-                    enemy.targetId = null;
-                    enemy.state = EnemyState.FindingTarget;
-                } else {
-                    moveTowardsTarget(game, enemy, enemyDimensions, enemy.targetPos);
-                }
+        switch(enemy.behaviour) {
+            case EnemyBehaviour.Normal:
+                executeNormalBehaviour(game, enemy);
                 break;
-            case EnemyState.FindingTarget:
-                if (enemy.hasTP) {
-                    moveTowardsTarget(game, enemy, enemyDimensions, new Point(game.view.size.width / 2, game.view.size.height + 100));
-                } else {
-                    if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
-                        enemy.targetId = findClosestTarget(game, enemyDimensions.centerLocation);
-
-                        if(!enemy.targetId) {
-                            continue;
-                        }
-                    }
-
-                    const targetLocation = game.state.ecs.components.dimensionsComponents.get(enemy.targetId).centerLocation;
-
-                    if (targetReached(game, enemy, enemyDimensions)) {
-                        CarrierHelper.carryObject(game, enemy.entityId, enemy.targetId);
-                        enemy.hasTP = true;
-                    } else {
-                        moveTowardsTarget(game, enemy, enemyDimensions, targetLocation);
-                    }
-                    break;
-                }
+            case EnemyBehaviour.Ram:
+                executeRamBehaviour(game, enemy);
+                break;
         }
     }
+}
+
+function executeNormalBehaviour(game: Game, enemy: EnemyComponent) {
+    const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
+
+    switch (enemy.state) {
+        case EnemyState.MovingToPos:
+            if (enemy.targetPos.distanceTo(enemyDimensions.centerLocation) < 10) {
+                enemy.targetPos = null;
+                enemy.targetId = null;
+                enemy.state = EnemyState.FindingTarget;
+            } else {
+                moveTowardsTarget(game, enemy, enemyDimensions, enemy.targetPos);
+            }
+            break;
+        case EnemyState.FindingTarget:
+            if (enemy.hasTP) {
+                moveTowardsTarget(game, enemy, enemyDimensions, new Point(game.view.size.width / 2, game.view.size.height + 100));
+            } else {
+                if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
+                    enemy.targetId = findClosestTarget(game, enemyDimensions.centerLocation);
+
+                    if(!enemy.targetId) {
+                        return;
+                    }
+                }
+
+                const targetLocation = game.state.ecs.components.dimensionsComponents.get(enemy.targetId).centerLocation;
+
+                if (targetReached(game, enemy, enemyDimensions)) {
+                    CarrierHelper.carryObject(game, enemy.entityId, enemy.targetId);
+                    enemy.hasTP = true;
+                } else {
+                    moveTowardsTarget(game, enemy, enemyDimensions, targetLocation);
+                }
+                break;
+            }
+    }
+}
+
+function executeRamBehaviour(game: Game, enemy: EnemyComponent) {
+    const enemyDimensions = game.state.ecs.components.dimensionsComponents.get(enemy.entityId) as LivingComponent;
+
+    if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
+        enemy.targetId = findClosestBarrier(game, enemyDimensions.centerLocation);
+
+        if(!enemy.targetId) {
+            enemy.behaviour = EnemyBehaviour.Normal;
+            return;
+        }
+    }
+
+    const targetLocation = game.state.ecs.components.dimensionsComponents.get(enemy.targetId).centerLocation;
+    moveTowardsTarget(game, enemy, enemyDimensions, targetLocation);
 }
 
 function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: DimensionsComponent, targetLocation: Point) {
@@ -60,12 +88,9 @@ function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: D
     if (!collisionEntity) {
         enemyDimensions.move(velocity);
     } else {
-        const livingComponent = collisionEntity as LivingComponent;
-        if (livingComponent) {
-            livingComponent.hp -= 1;
-            if (livingComponent.hp <= 0) {
-                game.state.ecs.disposeEntity(livingComponent.entityId);
-            }
+        collisionEntity.hitpoints -= enemy.ramForce;
+        if (collisionEntity.hitpoints <= 0) {
+            game.state.ecs.disposeEntity(collisionEntity.entityId);
         }
 
         enemy.targetId = null;
@@ -74,12 +99,15 @@ function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: D
     }
 }
 
-export function collides(state: GameState, id: EntityId, velocity: Vector): DimensionsComponent | undefined {
+export function collides(state: GameState, id: EntityId, velocity: Vector): BarrierComponent | undefined {
     const mover = state.ecs.components.dimensionsComponents.get(id);
-    const targetBounds = mover.bounds.translate(velocity);
-    for (var component of state.ecs.components.dimensionsComponents.all) {
-        if (component.hasCollision && component.bounds.overlaps(targetBounds) && component.entityId != mover.entityId) {
-            return component;
+    const moverBounds = mover.bounds.translate(velocity);
+    
+    for (var barrier of state.ecs.components.barrierComponents.all) {
+        const barrierDimensions = state.ecs.components.dimensionsComponents.get(barrier.entityId);
+
+        if (barrierDimensions.bounds.overlaps(moverBounds) && barrierDimensions.entityId != mover.entityId) {
+            return barrier;
         }
     }
 
@@ -88,6 +116,25 @@ export function collides(state: GameState, id: EntityId, velocity: Vector): Dime
 
 function findClosestTarget(game: Game, ownLocation: Point): EntityId {
     const allTargets = game.state.ecs.components.enemyTargetComponents.all;
+    let nearestTarget = null;
+
+    for (let target of allTargets) {
+        const targetLocation = game.state.ecs.components.dimensionsComponents.get(target.entityId).centerLocation;
+        const distance = ownLocation.distanceTo(targetLocation);
+
+        if (!nearestTarget || distance < nearestTarget.distance) {
+            nearestTarget = {
+                id: target.entityId,
+                distance: distance
+            };
+        }
+    }
+
+    return nearestTarget ? nearestTarget.id : null;
+}
+
+function findClosestBarrier(game: Game, ownLocation: Point): EntityId {
+    const allTargets = game.state.ecs.components.barrierComponents.all;
     let nearestTarget = null;
 
     for (let target of allTargets) {

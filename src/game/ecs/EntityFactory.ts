@@ -6,11 +6,12 @@ import { ProjectileComponent } from "./components/ProjectileComponent";
 import { EntityId } from "./EntityComponentSystem";
 import { CarryableComponent } from "./components/CarryableComponent";
 import { LivingComponent } from "./components/LivingComponent";
-import { EnemyComponent } from "./components/EnemyComponent";
+import { EnemyBehaviour, EnemyComponent } from "./components/EnemyComponent";
 import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
 import { AudioComponent } from "./components/AudioComponent";
 import { FallingObjectComponent } from "./components/FallingObjectComponent";
 import { randomInt } from "../../utilities/Random";
+import { BarrierComponent } from "./components/BarrierComponent";
 
 const PLAYER_HEALTH: number = 100;
 const ENEMY_HEALTH: number = 4;
@@ -41,7 +42,25 @@ export function createEnemy(game: Game, location: Point): EntityId {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-    game.state.ecs.components.enemyComponents.add(new EnemyComponent(entityId));
+    game.state.ecs.components.enemyComponents.add(new EnemyComponent(entityId, EnemyBehaviour.Normal));
+
+    return entityId;
+}
+
+export function createRamEnemy(game: Game, location: Point): EntityId {
+    const entityId = game.state.ecs.allocateEntityId();
+    var zombieType = "zombie"+ randomInt(0, 3);
+    var image = game.images.get(zombieType);
+
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH);
+    dimensions.hasCollision = false;
+
+    game.state.ecs.components.dimensionsComponents.add(dimensions);
+    game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
+    
+    const enemy = new EnemyComponent(entityId, EnemyBehaviour.Ram);
+    enemy.ramForce = 10;
+    game.state.ecs.components.enemyComponents.add(enemy);
 
     return entityId;
 }
@@ -111,11 +130,13 @@ export function createShoppingCart(game: Game, location: Point) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("shoppingcart");
 
-    const dimensions = new LivingComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), 50, true);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), true);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
+    game.state.ecs.components.barrierComponents.add(new BarrierComponent(entityId, 50));
+
     return entityId;
 }
 
@@ -124,12 +145,14 @@ export function createFallingBox(game: Game, location: Point) {
     const image = game.images.get("box");
     const targetLocation = new Point(location.x + (image.width / 2), location.y + (image.height / 2));
 
-    const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height), 5, true);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height), true);
     dimensions.hasCollision = false;
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
     game.state.ecs.components.fallingObjectComponents.add(new FallingObjectComponent(entityId, targetLocation, 100));
+    game.state.ecs.components.barrierComponents.add(new BarrierComponent(entityId, 5));
+
     return entityId;
 }
