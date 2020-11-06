@@ -9,7 +9,8 @@ export enum Keys {
     Fire,
     Pause,
     Menu,
-    Use
+    Use,
+    Sprint,
 }
 
 class GamepadBinding {

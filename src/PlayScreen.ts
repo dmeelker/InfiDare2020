@@ -34,7 +34,8 @@ export class PlayScreen implements IScreen {
 
     private _pause = false;
     private _firstBlood = true;
-    private _playerSpeed = 80;
+    private _playerSpeed = 70;
+    private _playerRunSpeed = 130;
     private _fireTimer = new Timer(200);
     private _waveTimer: Timer;
     private _waveNumber = 1;
@@ -121,7 +122,7 @@ export class PlayScreen implements IScreen {
         }
 
         if (this._state == GameState.Lost) {
-            DialogSystem.render(["You have lost!", "They've taken all of the TP!", "Now how will you survice the pandemic?!"], this._game, renderContext);
+            this._activeScenario = new GameOver();
         }
 
         this._ui.frameDone();
@@ -193,17 +194,21 @@ export class PlayScreen implements IScreen {
         }
 
         let velocity = Vector.zero;
+        var speed = this._playerSpeed;
+        if (this._game.input.isButtonDown(Keys.Sprint)) {
+            speed = this._playerRunSpeed;
+        }
         if (this._game.input.isButtonDown(Keys.MoveLeft)) {
-            velocity = velocity.add(new Vector(-time.calculateMovement(this._playerSpeed), 0));
+            velocity = velocity.add(new Vector(-time.calculateMovement(speed), 0));
         }
         if (this._game.input.isButtonDown(Keys.MoveRight)) {
-            velocity = velocity.add(new Vector(time.calculateMovement(this._playerSpeed), 0));
+            velocity = velocity.add(new Vector(time.calculateMovement(speed), 0));
         }
         if (this._game.input.isButtonDown(Keys.MoveUp)) {
-            velocity = velocity.add(new Vector(0, -time.calculateMovement(this._playerSpeed)));
+            velocity = velocity.add(new Vector(0, -time.calculateMovement(speed)));
         }
         if (this._game.input.isButtonDown(Keys.MoveDown)) {
-            velocity = velocity.add(new Vector(0, time.calculateMovement(this._playerSpeed)));
+            velocity = velocity.add(new Vector(0, time.calculateMovement(speed)));
         }
 
         if (AISystem.canMove(this._game.state, this._game.state.playerId, velocity)) {
