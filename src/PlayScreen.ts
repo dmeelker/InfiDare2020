@@ -114,7 +114,7 @@ export class PlayScreen implements IScreen {
     }
 
     private randomLocation(): Point {
-        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height));
+        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
     }
 
     handleEnemyKilled() {
