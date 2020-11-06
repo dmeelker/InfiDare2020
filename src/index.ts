@@ -15,6 +15,7 @@ import { Keyboard } from "./utilities/Keyboard";
 import { InputProvider, Keys } from "./utilities/InputProvider";
 import { GamepadPoller } from "./utilities/GamepadPoller";
 import { Mouse } from "./utilities/Mouse";
+import {LevelLoader} from "./utilities/LevelLoader/LevelLoader";
 import { MessageBus } from "./Events/MessageBus";
 
 export class ViewInfo {
@@ -52,6 +53,8 @@ export class Game {
     public readonly input = new InputProvider(this.keyboard, this.gamepadPoller);
     public readonly messageBus = new MessageBus();
 
+    public readonly leveLoader = new LevelLoader();
+
     public introScreen: IntroScreen;
     public playScreen: PlayScreen;
     public screenManager: ScreenManager;
@@ -67,6 +70,9 @@ export class Game {
     }
 
     private async initialize() {
+
+        this.leveLoader.loadLevel('test.json')
+
         this.setupView();
         this.mouse = new Mouse(this.view.canvas, this.view.scale);
         await this.loadImages();
