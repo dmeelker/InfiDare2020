@@ -31,6 +31,10 @@ export function update(game: Game) {
                 } else {
                     if (!enemy.targetId || !targetVisible(game, enemy.targetId)) {
                         enemy.targetId = findClosestTarget(game, enemyDimensions.centerLocation);
+
+                        if(!enemy.targetId) {
+                            continue;
+                        }
                     }
 
                     const targetLocation = game.state.ecs.components.dimensionsComponents.get(enemy.targetId).centerLocation;
