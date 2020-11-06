@@ -53,7 +53,11 @@ export class Level {
       const y = (Math.floor(idx / this.TiledLevel.width)) * this.TiledLevel.tileheight;
 
       const entityId = ecs.allocateEntityId();
-      const rect = new Rectangle(x, y, this.TiledLevel.tilewidth, this.TiledLevel.tileheight);
+
+      const marginX = this.TiledLevel.tilewidth * 0.20;
+      const marginY = this.TiledLevel.tileheight * 0.2
+      const rect = new Rectangle(x + marginX, y + marginY, this.TiledLevel.tilewidth - 2 * marginX, this.TiledLevel.tileheight - 2 * marginY);
+
       const dimensions = new DimensionsComponent(entityId, rect);
       ecs.components.dimensionsComponents.add(dimensions);
 
