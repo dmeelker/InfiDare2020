@@ -89,7 +89,9 @@ export class PlayScreen implements IScreen {
         }
 
         if(this._game.input.isButtonDown(Keys.Fire) && this._fireTimer.update(time.currentTime)) {
-            createApple(this._game, dimensions.centerLocation, new Vector(0, 1).multiplyScalar(150));
+            let vector = this._game.mouse.Location.toVector().subtract(dimensions.centerLocation.toVector());
+            vector = vector.toUnit().multiplyScalar(200);
+            createApple(this._game, dimensions.centerLocation, vector);
         }
     }
 

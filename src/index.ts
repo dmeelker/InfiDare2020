@@ -14,6 +14,7 @@ import { GameState } from "./game/GameState";
 import { Keyboard } from "./utilities/Keyboard";
 import { InputProvider, Keys } from "./utilities/InputProvider";
 import { GamepadPoller } from "./utilities/GamepadPoller";
+import { Mouse } from "./utilities/Mouse";
 
 export class ViewInfo {
     public canvas: HTMLCanvasElement;
@@ -44,6 +45,7 @@ export class Game {
     public readonly images = new Images();
     public readonly animations = new AnimationRepository();
     public readonly fonts = new Fonts();
+    public mouse: Mouse;
     public readonly keyboard = new Keyboard();
     public readonly gamepadPoller = new GamepadPoller();
     public readonly input = new InputProvider(this.keyboard, this.gamepadPoller);
@@ -64,6 +66,7 @@ export class Game {
  
     private async initialize() {
         this.setupView();
+        this.mouse = new Mouse(this.view.canvas, this.view.scale);
         await this.loadImages();
         this.setupAnimations();
         this.loadFonts();
