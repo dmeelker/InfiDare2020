@@ -108,7 +108,7 @@ export class PlayScreen implements IScreen {
     }
     private spawnBoxes() {
         const count = Math.min(this._waveNumber, 3);
-        for(let i=0; i<count; i++) {
+        for (let i = 0; i < count; i++) {
             createFallingBox(this._game, this.randomLocation());
         }
     }
@@ -192,7 +192,7 @@ export class PlayScreen implements IScreen {
 
     spawnWave() {
         for (let i = 0; i < 2 * (this._waveNumber + 2); i++) {
-            createEnemy(this._game, new Point(25 * i, 250));
+            createEnemy(this._game, new Point(randomInt(1, 400), randomInt(200, 300)));
         }
         this._waveNumber++;
     }
