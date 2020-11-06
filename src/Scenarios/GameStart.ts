@@ -61,5 +61,15 @@ export class GameOver extends BaseScenario {
     }
 }
 
+export class DirkSpawned extends BaseScenario {
+    public constructor() {
+        super();
+        this.add(new Dialog("Dirk", ["Hey, heb je even tijd om te bellen?"]));
+        this.add(new Dialog("Dirk", ["Heb je je uren al geschreven?", "En ehm... is het al af?"]));
+        this.add(new Dialog("Dirk", ["Enneh, even devils advocate he?", "Is er niet gewoon genoeg TP voor ons allemaal?"]));
+        this.add(new Dialog(Dialog.You, ["Oh nee...", "Het is corona Dirk..."]));
+    }
+}
+
 
 

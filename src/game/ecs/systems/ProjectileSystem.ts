@@ -8,6 +8,7 @@ import * as CarrierHelper from "./../utilities/CarrierHelper"
 import { Events, EnemyKilledEventArgs } from "../../../Events/Events";
 import { chance } from "../../../utilities/Random";
 import { createShoppingCart } from "../EntityFactory";
+import { EnemyBehaviour } from "../components/EnemyComponent";
 
 export function update(game: Game) {
     for (let projectileComponent of game.state.ecs.components.projectileComponents.all) {
@@ -39,6 +40,8 @@ function checkForCollisions(game: Game, projectileComponent: ProjectileComponent
                 if (chance(15)) {
                     createShoppingCart(game, enemyDimensions.bounds.location);
                 }
+                
+                if (enemy.behaviour == EnemyBehaviour.Normal);
             }
             break;
         }

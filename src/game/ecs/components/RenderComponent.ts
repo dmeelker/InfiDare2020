@@ -30,7 +30,6 @@ export class MovingRenderComponent extends RenderComponent {
 
     public constructor(entityId: EntityId, images: Map<Direction, ImageBitmap>) {
         super(entityId, new StaticImageProvider(images.get(Direction.Down)));
-        console.log("hallo", images);
         this._images = images;
     }
 

@@ -19,7 +19,7 @@ import { Point, Rectangle, Vector } from "./utilities/Trig";
 import { createApple, createBeerCan, createChicken, createPlayer, createEnemy, createShoppingCart, createToiletPaper, createFallingBox, createBoss, createDuck, createRamEnemy, createBanana } from "./game/ecs/EntityFactory";
 import { randomArrayElement, randomInt } from "./utilities/Random";
 import * as Events from "./Events/Events";
-import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
+import { BaseScenario, GameStart, FirstEnemyKilled, DirkSpawned } from "./Scenarios/GameStart";
 import { GameOver } from "./Scenarios/GameStart";
 import { AudioComponent } from "./game/ecs/components/AudioComponent";
 import { Direction } from "./game/ecs/components/RenderComponent";
@@ -49,7 +49,7 @@ export class PlayScreen implements IScreen {
     private _playerSpeed = 70;
     private _playerRunSpeed = 130;
     private _fireTimer = new Timer(200);
-    private _waveNumber = 0;
+    private _waveNumber = 4;
     private _state = GameState.Preparing;
     private _stateEnterTime = 0;
     private _prepareTime = 10000;
@@ -197,7 +197,7 @@ export class PlayScreen implements IScreen {
         let gameState = this._game.state;
 
         this.switchState(GameState.Defending);
-        this._waveNumber = 0;
+        this._waveNumber = 3;
         gameState.ecs.clear();
         gameState.score.reset();
         this._game.level.addWallsAndStatics('solids', gameState.ecs);
@@ -226,6 +226,18 @@ export class PlayScreen implements IScreen {
             for (let i = 0; i < this._waveNumber / 5; i++) {
                 createBoss(this._game, this.randomLocationInArea(spawnArea));
             }
+        }
+
+        if (this._waveNumber % 5 == 0) {
+            console.log("Hallo!");
+            new Audio("../gfx/dirklaugh.mp3").play();
+            setTimeout(() => {
+                var dirkenterType = randomInt(0,3);
+                new Audio("../gfx/dirkenters"+dirkenterType+".mp3").play();
+            }, 3000);
+        }
+        if (this._waveNumber == 5) {
+            this._activeScenario = new DirkSpawned();
         }
 
         for (let i = 0; i < num_zombies; i++) {
