@@ -40,7 +40,7 @@ export class PlayScreen implements IScreen {
     private _playerSpeed = 70;
     private _playerRunSpeed = 130;
     private _fireTimer = new Timer(200);
-    private _waveNumber = 1;
+    private _waveNumber = 0;
     private _state = GameState.Preparing;
     private _stateEnterTime = 0;
     private _prepareTime = 10000;
@@ -150,6 +150,12 @@ export class PlayScreen implements IScreen {
 
                 if (message) {
                     this._game.fonts.medium.renderCentered(renderContext, new Point(this._game.view.size.width / 2, this._game.view.size.height / 2), message);
+                }
+                break;
+
+            case GameState.Defending:
+                if (this._game.time.currentTime - this._stateEnterTime < 2000) {
+                    this._game.fonts.medium.renderCentered(renderContext, new Point(this._game.view.size.width / 2, this._game.view.size.height / 2), `Wave ${this._waveNumber}`);
                 }
                 break;
 
