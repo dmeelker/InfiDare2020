@@ -3,6 +3,9 @@ import {TileSet} from "./TileSet";
 import {EntityComponentSystem} from "../../game/ecs/EntityComponentSystem";
 import {DimensionsComponent} from "../../game/ecs/components/DimensionsComponent";
 import {Rectangle} from "../Trig";
+import {BarrierComponent} from "../../game/ecs/components/BarrierComponent";
+import {Images} from "../Images";
+import {RenderComponent, StaticImageProvider} from "../../game/ecs/components/RenderComponent";
 
 
 export class Level {
@@ -30,7 +33,7 @@ export class Level {
     })
   }
 
-  public addWallsAndStatics(layerName: string, ecs: EntityComponentSystem) {
+  public addWallsAndStatics(layerName: string, ecs: EntityComponentSystem, images?: Images) {
     if (!this.TileSet) {
       console.warn('TileSet isn\'t loaded yet...');
       return false;
@@ -46,15 +49,25 @@ export class Level {
         return;
       }
 
-      let x = (idx % this.TiledLevel.width) * this.TiledLevel.tilewidth;
-      let y = (Math.floor(idx / this.TiledLevel.height)) * this.TiledLevel.tileheight;
+      const x = (idx % this.TiledLevel.width) * this.TiledLevel.tilewidth;
+      const y = (Math.floor(idx / this.TiledLevel.width)) * this.TiledLevel.tileheight;
 
       const entityId = ecs.allocateEntityId();
-      let rect = new Rectangle(x, y, this.TiledLevel.tilewidth * 0.75, this.TiledLevel.tileheight * 0.75);
-      let dimensions = new DimensionsComponent(entityId, rect, true);
-      ecs.components.dimensionsComponents.add(dimensions);
-    });
 
+      const marginX = this.TiledLevel.tilewidth * 0.20;
+      const marginY = this.TiledLevel.tileheight * 0.2
+      const rect = new Rectangle(x + marginX, y + marginY, this.TiledLevel.tilewidth - 2 * marginX, this.TiledLevel.tileheight - 2 * marginY);
+
+      const dimensions = new DimensionsComponent(entityId, rect);
+      ecs.components.dimensionsComponents.add(dimensions);
+
+      if (images) {
+        const image = images.get("banana");
+        ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
+      }
+
+      ecs.components.barrierComponents.add(new BarrierComponent(entityId, -1));
+    });
   }
 
   public drawMap(canvas: CanvasRenderingContext2D): boolean {

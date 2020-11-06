@@ -133,7 +133,6 @@ export class PlayScreen implements IScreen {
             this._firstBlood = false;
         }
         var sound = randomInt(0, 3);
-        console.log(sound);
         this._game.state.ecs.components.audioComponents.add(new AudioComponent(this._game.state.ecs.allocateEntityId(), "zombiedeath" + sound + ".mp3"))
     }
 
@@ -200,7 +199,8 @@ export class PlayScreen implements IScreen {
         this._waveNumber = 3;
         gameState.ecs.clear();
         gameState.score.reset();
-        this._game.level.addWallsAndStatics('solids', gameState.ecs);
+        //this._game.level.addWallsAndStatics('solids', gameState.ecs);
+        this._game.level.addWallsAndStatics('solids', gameState.ecs, this._game.images);
 
         this.spawnBoxes();
         this.spawnPaper();
@@ -214,15 +214,15 @@ export class PlayScreen implements IScreen {
 
     private spawnWave() {
         const spawnArea = new Rectangle(
-            this._game.view.size.width - 100, 100,
-            0, this._game.view.size.height
+            this._game.view.size.width - 50, 100,
+            50, this._game.view.size.height - 200
         );
-        
+
         this._waveNumber++;
 
-        let num_zombies = 2 * this._waveNumber;
+        let num_zombies = 3 * this._waveNumber;
         if (this._waveNumber % 5 === 0) {
-            num_zombies /= 2;
+            num_zombies /= 3;
             for (let i = 0; i < this._waveNumber / 5; i++) {
                 createBoss(this._game, this.randomLocationInArea(spawnArea));
             }
@@ -276,16 +276,17 @@ export class PlayScreen implements IScreen {
         ];
 
         if (this._waveNumber > 5) {
-            factories.push(new EnemyFactoryWithWeight(createRamEnemy, 10));
+            const chance = Math.min(this._waveNumber * 2, 30);
+            factories.push(new EnemyFactoryWithWeight(createRamEnemy, chance));
         }
 
         return factories;
     }
 
     spawnPaper() {
-        for (let x = 0; x < 5; x++) {
-            for (let y = 0; y < 3; y++) {
-                let location = new Point((x * 30) + 200, y * 30 + 75);
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 5; y++) {
+                let location = new Point((x * 30) + 80, y * 30 + 150);
 
                 createToiletPaper(this._game, location);
             }
