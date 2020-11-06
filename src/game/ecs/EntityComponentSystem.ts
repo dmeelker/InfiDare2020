@@ -2,6 +2,8 @@ import { DimensionsComponent } from "./components/DimensionsComponent";
 import { RenderComponent } from "./components/RenderComponent";
 import { TimedDestroyComponent } from "./components/TimedDestroyComponent";
 import { ProjectileComponent } from "./components/ProjectileComponent";
+import { CarryableComponent } from "./components/CarryableComponent";
+import { CarrierComponent } from "./components/CarrierComponent";
 
 export type EntityId = number;
 
@@ -46,12 +48,16 @@ export class ComponentStore {
     public readonly dimensionsComponents = new ComponentList<DimensionsComponent>();
     public readonly projectileComponents = new ComponentList<ProjectileComponent>();
     public readonly timedDestroyComponents = new ComponentList<TimedDestroyComponent>();
-
+    public readonly carrierComponents = new ComponentList<CarrierComponent>();
+    public readonly carryableComponents = new ComponentList<CarryableComponent>();
+    
     private readonly _all = [
         this.renderComponents, 
         this.dimensionsComponents, 
         this.projectileComponents, 
-        this.timedDestroyComponents];
+        this.timedDestroyComponents,
+        this.carrierComponents,
+        this.carryableComponents];
 
     public removeComponentsForEntity(entityId: EntityId) {
         this._all.forEach(store => store.remove(entityId));
@@ -59,6 +65,30 @@ export class ComponentStore {
 
     public clear() {
         this._all.forEach(store => store.clear());
+    }
+
+    public exportSingleEntity(entityId: EntityId) : ComponentStore {
+        const result = new ComponentStore();
+
+        for(let i=0; i<this._all.length; i++) {
+            const component = this._all[i].get(entityId);
+
+            if(component) {
+                result._all[i].add(component);
+            }
+        }
+
+        return result;
+    }
+
+    public import(store: ComponentStore) {
+        for(let i=0; i<store._all.length; i++) {
+            const components = store._all[i].all;
+
+            for(let component of components) {
+                this._all[i].add(component);
+            }
+        }
     }
 }
 

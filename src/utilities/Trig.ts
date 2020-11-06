@@ -84,6 +84,10 @@ export class Rectangle {
     translate(v: Vector) {
         return new Rectangle(this.x + v.x, this.y + v.y, this.width, this.height);
     }
+
+    public halfSize(): Rectangle {
+        return new Rectangle(this.x, this.y, this.width / 2, this.height / 2);
+    }
 }
 
 export class Vector {

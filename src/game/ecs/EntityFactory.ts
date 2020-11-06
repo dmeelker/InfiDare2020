@@ -4,12 +4,14 @@ import { DimensionsComponent } from "./components/DimensionsComponent";
 import { RenderComponent, StaticImageProvider } from "./components/RenderComponent";
 import { ProjectileComponent } from "./components/ProjectileComponent";
 import { EntityId } from "./EntityComponentSystem";
+import { CarryableComponent } from "./components/CarryableComponent";
 
 export function createPlayer(game: Game, location: Point,): EntityId {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("player");
 
     const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height));
+    dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
@@ -80,7 +82,8 @@ export function createToiletPaper(game: Game, location: Point) {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-
+    game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
+    
     return entityId;
 }
 
@@ -93,6 +96,6 @@ export function createShoppingCart(game: Game, location: Point) {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-
+    game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
     return entityId;
 }
