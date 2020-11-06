@@ -23,6 +23,7 @@ import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
 import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
 import { GameOver } from "./Scenarios/GameStart";
+import { AudioComponent } from "./game/ecs/components/AudioComponent";
 
 enum GameState {
     Preparing,
@@ -122,6 +123,9 @@ export class PlayScreen implements IScreen {
             this._activeScenario = new FirstEnemyKilled();
             this._firstBlood = false;
         }
+        var sound = randomInt(0, 3);
+        console.log(sound);
+        this._game.state.ecs.components.audioComponents.add(new AudioComponent(this._game.state.ecs.allocateEntityId(), "zombiedeath" + sound + ".mp3"))
     }
 
     render(renderContext: CanvasRenderingContext2D): void {
