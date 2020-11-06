@@ -79,7 +79,7 @@ export class Game {
         this.initializeKeyBindings();
 
         this.level = new Level(this.view.canvas);
-        await this.level.loadLevel('test.json');
+        await this.level.loadLevel('level01.json');
     }
 
     private setupView() {
