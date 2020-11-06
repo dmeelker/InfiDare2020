@@ -23,6 +23,7 @@ import { CarrierComponent } from "./game/ecs/components/CarrierComponent";
 import { CarryableComponent } from "./game/ecs/components/CarryableComponent";
 import { BaseScenario, GameStart, FirstEnemyKilled } from "./Scenarios/GameStart";
 import { GameOver } from "./Scenarios/GameStart";
+import { AudioComponent } from "./game/ecs/components/AudioComponent";
 
 enum GameState {
     Preparing,
@@ -122,10 +123,13 @@ export class PlayScreen implements IScreen {
             this._activeScenario = new FirstEnemyKilled();
             this._firstBlood = false;
         }
+        var sound = randomInt(0, 3);
+        console.log(sound);
+        this._game.state.ecs.components.audioComponents.add(new AudioComponent(this._game.state.ecs.allocateEntityId(), "zombiedeath" + sound + ".mp3"))
     }
 
     render(renderContext: CanvasRenderingContext2D): void {
-        this.drawFloor(renderContext);
+        this._game.level.drawMap(this._game.view.context);
         FallingObjectShadowRenderer.render(this._game, renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         AudioSystem.render(this._game);
@@ -167,21 +171,10 @@ export class PlayScreen implements IScreen {
         this._ui.frameDone();
     }
 
-    private drawFloor(renderContext: CanvasRenderingContext2D) {
-        let image = this._game.images.get("floor1");
-        const viewSize = this._game.view.size
-        const blocksX = viewSize.width / image.width;
-        const blocksY = viewSize.width / image.height;
-
-        for (let x = 0; x < blocksX; x++) {
-            for (let y = 0; y < blocksY; y++) {
-                renderContext.drawImage(image, x * image.width, y * image.height);
-            }
-        }
-    }
 
     private resetGame() {
         let gameState = this._game.state;
+
 
         this.switchState(GameState.Defending);
         gameState.ecs.clear();
