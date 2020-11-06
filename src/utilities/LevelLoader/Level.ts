@@ -3,7 +3,7 @@ import {TileSet} from "./TileSet";
 
 
 export class Level {
-  levels_folder = '/levels/'
+  levels_folder = 'levels/'
   private TiledLevel: TiledLevel;
   private TileSet: TileSet[];
   private TileIdArray: Uint32Array[] = [];

@@ -178,6 +178,7 @@ export class PlayScreen implements IScreen {
 
 
         this.switchState(GameState.Defending);
+        this._waveNumber = 0;
         gameState.ecs.clear();
         gameState.score.reset();
         this.spawnBoxes();
