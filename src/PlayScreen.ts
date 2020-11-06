@@ -264,7 +264,8 @@ export class PlayScreen implements IScreen {
         ];
 
         if (this._waveNumber > 5) {
-            factories.push(new EnemyFactoryWithWeight(createRamEnemy, 10));
+            const chance = Math.min(this._waveNumber * 2, 30);
+            factories.push(new EnemyFactoryWithWeight(createRamEnemy, chance));
         }
 
         return factories;
