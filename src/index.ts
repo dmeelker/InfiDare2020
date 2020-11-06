@@ -2,27 +2,27 @@ import {Images} from "./utilities/Images";
 import {FrameCounter} from "./utilities/FrameCounter";
 import PixelFontSmall from "./fonts/PixelFontSmall"
 import PixelFontMedium from "./fonts/PixelFontMedium"
-import { Point, Rectangle } from "./utilities/Trig";
-import { FrameTime } from "./utilities/FrameTime";
-import { SpriteSheetLoader } from "./utilities/SpriteSheetLoader";
-import { AnimationDefinition, AnimationRepository } from "./utilities/Animation";
-import { Font, prepareFont } from "./utilities/Font";
-import { ScreenManager } from "./utilities/ScreenManager";
-import { IntroScreen } from "./IntroScreen";
-import { PlayScreen } from "./PlayScreen";
-import { GameState } from "./game/GameState";
-import { Keyboard } from "./utilities/Keyboard";
-import { InputProvider, Keys } from "./utilities/InputProvider";
-import { GamepadPoller } from "./utilities/GamepadPoller";
-import { Mouse } from "./utilities/Mouse";
-import {LevelLoader} from "./utilities/LevelLoader/LevelLoader";
-import { MessageBus } from "./Events/MessageBus";
+import {Point, Rectangle} from "./utilities/Trig";
+import {FrameTime} from "./utilities/FrameTime";
+import {SpriteSheetLoader} from "./utilities/SpriteSheetLoader";
+import {AnimationDefinition, AnimationRepository} from "./utilities/Animation";
+import {Font, prepareFont} from "./utilities/Font";
+import {ScreenManager} from "./utilities/ScreenManager";
+import {IntroScreen} from "./IntroScreen";
+import {PlayScreen} from "./PlayScreen";
+import {GameState} from "./game/GameState";
+import {Keyboard} from "./utilities/Keyboard";
+import {InputProvider, Keys} from "./utilities/InputProvider";
+import {GamepadPoller} from "./utilities/GamepadPoller";
+import {Mouse} from "./utilities/Mouse";
+import {MessageBus} from "./Events/MessageBus";
+import {Level} from "./utilities/LevelLoader/Level";
 
 export class ViewInfo {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   public size: Rectangle;
-  public scale: number = 2;
+  public scale: number = 1;
 
   public levelToScreenCoordinates(levelCoordinates: Point): Point {
     return new Point(

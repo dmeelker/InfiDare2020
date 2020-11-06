@@ -22,31 +22,45 @@ export class Level {
     // read base64 level array
     this.parseDataForLayer();
     // draw all the tiles to screen
-    console.log('map loaded')
+
+    let diffs = this.TileIdArray.filter((v, i, self) => self.indexOf(v) === i);
+
+    console.log('map loaded', diffs)
   }
 
-  private drawMap(): boolean {
-    if (!this.TileSet){
+  public drawMap(canvas: CanvasRenderingContext2D): boolean {
+    if (!this.TileSet) {
       console.warn('TileSet isn\'t loaded yet...');
       return false;
     }
 
     for (let i = 0; i < this.TileIdArray.length; i++) {
       let tileId = this.TileIdArray[i];
-      let x = i % this.TiledLevel.width;
-      let y = Math.floor(i / this.TiledLevel.height);
+
+      // Put Default tile here
+      if (tileId === 0) {
+        continue;
+      }
+
+      let x = (i % this.TiledLevel.width) * this.TiledLevel.tilewidth;
+      let y = (Math.floor(i / this.TiledLevel.height)) * this.TiledLevel.tileheight;
 
       // GetTileSet
       const set = this.TileSet.find(t => tileId >= t.first_gid);
-      if (!set){
+      if (!set) {
         console.log(this.TileSet, tileId);
         return;
       }
       let xOnSheet = (tileId - set.first_gid) % set.columns;
       let yOnSheet = Math.floor((tileId - set.first_gid) / (set.tilecount / set.columns))
 
-      this.canvas.getContext("2d")
-        .drawImage(set.image_tag, xOnSheet, yOnSheet, set.source_width, set.source_height,
+      canvas
+        .drawImage(
+          set.image_tag,
+          xOnSheet,
+          yOnSheet,
+          set.tilewidth,
+          set.tileheight,
           x, y, this.TiledLevel.tilewidth, this.TiledLevel.tileheight);
     }
     return true;
@@ -54,8 +68,9 @@ export class Level {
 
   private async parseTileSets(): Promise<TileSet[]> {
     let convert = require('xml-js');
-    if (!this.TileSet){}
-      this.TileSet = [];
+    if (!this.TileSet) {
+    }
+    this.TileSet = [];
 
     for (let i = 0; i < this.TiledLevel.tilesets.length; i++) {
       const ts = this.TiledLevel.tilesets[i];
@@ -90,7 +105,7 @@ export class Level {
 
   private async buildTileSetFromXml(tileSetString: string, first_gid: number): Promise<TileSet> {
     let tileSetObject = JSON.parse(tileSetString);
-    let image = new Image();
+    let image: HTMLImageElement = new Image(tileSetObject.tileset.image._attributes.width, tileSetObject.tileset.image._attributes.height);
     image.src = 'levels/' + tileSetObject.tileset.image._attributes.source;
 
     let tileSet: TileSet = {

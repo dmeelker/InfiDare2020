@@ -125,7 +125,8 @@ export class PlayScreen implements IScreen {
     }
 
     render(renderContext: CanvasRenderingContext2D): void {
-        this.drawFloor(renderContext);
+        //this.drawFloor(renderContext);
+        this._game.level.drawMap(this._game.view.context);
         FallingObjectShadowRenderer.render(this._game, renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         AudioSystem.render(this._game);
@@ -177,17 +178,18 @@ export class PlayScreen implements IScreen {
     private resetGame() {
         let gameState = this._game.state;
 
+
         this.switchState(GameState.Defending);
         gameState.ecs.clear();
         gameState.score.reset();
         this.spawnBoxes();
         this.spawnPaper();
 
-        createShoppingCart(this._game, new Point(50, 200));
-        createShoppingCart(this._game, new Point(300, 100));
+        //createShoppingCart(this._game, new Point(50, 200));
+        //createShoppingCart(this._game, new Point(300, 100));
 
         gameState.playerId = createPlayer(this._game, new Point(100, 100));
-        this.spawnWave();
+        //this.spawnWave();
     }
 
     spawnWave() {
