@@ -124,8 +124,25 @@ export class PlayScreen implements IScreen {
         }
     }
 
+    private isAreaClear(area: Rectangle): boolean {
+        for(let barrier of this._game.state.ecs.components.barrierComponents.all) {
+            const dimensions = this._game.state.ecs.components.dimensionsComponents.get(barrier.entityId);
+
+            if(area.overlaps(dimensions.bounds)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private randomLocation(): Point {
-        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
+        let location: Point;
+        do {
+            location = new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
+        } while(!this.isAreaClear(new Rectangle(location.x - 20, location.y - 20, 40, 40)));
+
+        return location;
     }
 
     handleEnemyKilled() {
@@ -200,8 +217,8 @@ export class PlayScreen implements IScreen {
         this._waveNumber = 3;
         gameState.ecs.clear();
         gameState.score.reset();
-        //this._game.level.addWallsAndStatics('solids', gameState.ecs);
-        this._game.level.addWallsAndStatics('solids', gameState.ecs, this._game.images);
+        this._game.level.addWallsAndStatics('solids', gameState.ecs);
+        // this._game.level.addWallsAndStatics('solids', gameState.ecs, this._game.images);
 
         this.spawnBoxes();
         this.spawnPaper();
@@ -221,9 +238,9 @@ export class PlayScreen implements IScreen {
 
         this._waveNumber++;
 
-        let num_zombies = 3 * this._waveNumber;
+        let num_zombies = 4 * this._waveNumber;
         if (this._waveNumber % 5 === 0) {
-            num_zombies /= 3;
+            num_zombies /= 2;
             for (let i = 0; i < this._waveNumber / 5; i++) {
                 createBoss(this._game, this.randomLocationInArea(spawnArea));
             }
