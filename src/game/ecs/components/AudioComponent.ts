@@ -6,7 +6,7 @@ export class AudioComponent extends Component {
 
     public constructor(entityId: EntityId, pathToAudioFile: string, loop?:boolean) {
         super(entityId);
-        this.audio = new Audio("../../../../gfx/" + pathToAudioFile);
+        this.audio = new Audio("gfx/" + pathToAudioFile);
         this.loop = loop ?? false;
     }
 }
