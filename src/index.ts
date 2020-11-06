@@ -63,7 +63,7 @@ export class Game {
         await this.initialize();
         this.requestAnimationFrame();
     }
- 
+
     private async initialize() {
         this.setupView();
         this.mouse = new Mouse(this.view.canvas, this.view.scale);
