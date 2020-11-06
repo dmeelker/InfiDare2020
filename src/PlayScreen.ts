@@ -6,6 +6,7 @@ import * as RenderSystem from "./game/ecs/systems/RenderSystem";
 import * as ProjectileSystem from "./game/ecs/systems/ProjectileSystem";
 import * as EntityCleanupSystem from "./game/ecs/systems/EntityCleanupSystem"
 import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
+import * as AISystem from "./game/ecs/systems/AISystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
@@ -38,11 +39,7 @@ export class PlayScreen implements IScreen {
         this.handleInput(time);
 
         ProjectileSystem.update(this._game);
-        const enemy = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.enemyId);
-        const target = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
-        const velocity = target.centerLocation.subtract(enemy.centerLocation).toUnit().multiplyScalar(0.6);
-        enemy.move(velocity);
-
+        AISystem.update(this._game);
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
         this._game.state.ecs.removeDisposedEntities();
