@@ -93,6 +93,9 @@ export class Game {
         await this.images.load("toiletpaper", "gfx/tp.png");
         await this.images.load("chicken", "gfx/chicken.png");
         await this.images.load("shoppingcart", "gfx/cart.png");
+
+        await this.images.load("pixelfont-small", "gfx/pixelfont-small.png");
+        await this.images.load("pixelfont-medium", "gfx/pixelfont-medium.png");
     }
 
     private async setupAnimations() {
