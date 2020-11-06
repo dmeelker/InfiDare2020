@@ -220,9 +220,9 @@ export class PlayScreen implements IScreen {
 
         this._waveNumber++;
 
-        let num_zombies = 2 * this._waveNumber;
+        let num_zombies = 3 * this._waveNumber;
         if (this._waveNumber % 5 === 0) {
-            num_zombies /= 2;
+            num_zombies /= 3;
             for (let i = 0; i < this._waveNumber / 5; i++) {
                 createBoss(this._game, this.randomLocationInArea(spawnArea));
             }
