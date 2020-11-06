@@ -52,25 +52,34 @@ function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: D
     const velocity = targetLocation.subtract(enemyDimensions.centerLocation).toUnit()
         .multiplyScalar(game.time.calculateMovement(speed));
 
-    if (canMove(game.state, enemyDimensions.entityId, velocity)) {
+    const collisionEntity = collides(game.state, enemyDimensions.entityId, velocity);
+    if (!collisionEntity) {
         enemyDimensions.move(velocity);
     } else {
+        const livingComponent = collisionEntity as LivingComponent;
+        if (livingComponent) {
+            livingComponent.hp -= 1;
+            if (livingComponent.hp <= 0) {
+                game.state.ecs.disposeEntity(livingComponent.entityId);
+            }
+        }
+
         enemy.targetId = null;
         enemy.targetPos = enemyDimensions.centerLocation.add(new Vector(40 - 80 * Math.random(), 40 - 80 * Math.random()))
         enemy.state = EnemyState.MovingToPos;
     }
 }
 
-export function canMove(state: GameState, id: EntityId, velocity: Vector): boolean {
+export function collides(state: GameState, id: EntityId, velocity: Vector): DimensionsComponent | undefined {
     const mover = state.ecs.components.dimensionsComponents.get(id);
     const targetBounds = mover.bounds.translate(velocity);
     for (var component of state.ecs.components.dimensionsComponents.all) {
         if (component.hasCollision && component.bounds.overlaps(targetBounds) && component.entityId != mover.entityId) {
-            return false;
+            return component;
         }
     }
 
-    return true;
+    return undefined;
 }
 
 function findClosestTarget(game: Game, ownLocation: Point): EntityId {

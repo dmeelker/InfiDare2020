@@ -86,7 +86,7 @@ export function createToiletPaper(game: Game, location: Point) {
 
     const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
     dimensions.hasCollision = false;
-    
+
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
@@ -99,7 +99,7 @@ export function createShoppingCart(game: Game, location: Point) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("shoppingcart");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), 50, true);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));

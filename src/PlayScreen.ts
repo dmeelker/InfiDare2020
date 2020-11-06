@@ -78,7 +78,7 @@ export class PlayScreen implements IScreen {
 
         switch (this._state) {
             case GameState.Preparing:
-                if(time.currentTime - this._stateEnterTime >= this._prepareTime) {
+                if (time.currentTime - this._stateEnterTime >= this._prepareTime) {
                     this.spawnWave();
                     this.switchState(GameState.Defending);
                 }
@@ -118,20 +118,20 @@ export class PlayScreen implements IScreen {
             DialogSystem.render(this._activeScenario.current(), this._game, renderContext);
         }
 
-        switch(this._state) {
+        switch (this._state) {
             case GameState.Preparing:
                 const timeLeft = (this._game.time.currentTime - this._stateEnterTime) / this._prepareTime;
                 let message: string = null;
 
-                if(timeLeft > .8) {
+                if (timeLeft > .8) {
                     message = "Here they come!";
-                } else if(timeLeft > .5) {
+                } else if (timeLeft > .5) {
                     message = "Prepare yourself!";
-                } else if(timeLeft < .2) {
+                } else if (timeLeft < .2) {
                     message = "You got them all!";
                 }
 
-                if(message) {
+                if (message) {
                     this._game.fonts.medium.renderCentered(renderContext, new Point(this._game.view.size.width / 2, this._game.view.size.height / 2), message);
                 }
                 break;
@@ -227,7 +227,7 @@ export class PlayScreen implements IScreen {
             velocity = velocity.add(new Vector(0, time.calculateMovement(speed)));
         }
 
-        if (AISystem.canMove(this._game.state, this._game.state.playerId, velocity)) {
+        if (!AISystem.collides(this._game.state, this._game.state.playerId, velocity)) {
             player.bounds.location = player.bounds.location.add(velocity);
         }
 
