@@ -11,6 +11,7 @@ export class DimensionsComponent extends Component {
     constructor(entityId: EntityId, bounds: Rectangle) {
         super(entityId);
         this.bounds = bounds;
+        this.center = new Point(bounds.x / 2, bounds.y / 2);
     }
 
     public get rotationInDegrees(): number {
