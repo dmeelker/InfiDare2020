@@ -8,7 +8,11 @@ import { CarryableComponent } from "./components/CarryableComponent";
 import { LivingComponent } from "./components/LivingComponent";
 import { EnemyComponent } from "./components/EnemyComponent";
 import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
+<<<<<<< HEAD
 import { AudioComponent } from "./components/AudioComponent";
+=======
+import { FallingObjectComponent } from "./components/FallingObjectComponent";
+>>>>>>> d732df955c068647fd36e721a02a6ddc40f1db34
 
 const PLAYER_HEALTH: number = 100;
 const ENEMY_HEALTH: number = 4;
@@ -90,6 +94,7 @@ export function createToiletPaper(game: Game, location: Point) {
     const image = game.images.get("toiletpaper");
 
     const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
+    dimensions.hasCollision = false;
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
@@ -103,10 +108,25 @@ export function createShoppingCart(game: Game, location: Point) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("shoppingcart");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
+    const dimensions = new LivingComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), 50, true);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
+    return entityId;
+}
+
+export function createFallingBox(game: Game, location: Point) {
+    const entityId = game.state.ecs.allocateEntityId();
+    const image = game.images.get("box");
+    const targetLocation = new Point(location.x + (image.width / 2), location.y + (image.height / 2));
+
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height));
+    dimensions.hasCollision = false;
+
+    game.state.ecs.components.dimensionsComponents.add(dimensions);
+    game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
+    game.state.ecs.components.carryableComponents.add(new CarryableComponent(entityId));
+    game.state.ecs.components.fallingObjectComponents.add(new FallingObjectComponent(entityId, targetLocation, 100));
     return entityId;
 }

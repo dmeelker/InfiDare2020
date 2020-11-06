@@ -5,8 +5,8 @@ import { DimensionsComponent } from "./DimensionsComponent";
 export class LivingComponent extends DimensionsComponent {
     public hp: number;
 
-    constructor(entityId: EntityId, bounds: Rectangle, hp: number) {
-        super(entityId, bounds, false);
+    constructor(entityId: EntityId, bounds: Rectangle, hp: number, hasCollision: boolean = false) {
+        super(entityId, bounds, hasCollision);
         this.hp = hp;
     }
 }
