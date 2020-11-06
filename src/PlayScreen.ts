@@ -16,7 +16,7 @@ export class PlayScreen implements IScreen {
     private readonly _ui = new Ui();
     private readonly _uiInputProvider;
 
-    private _playerSpeed = 200;
+    private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
 
     public constructor(game: Game) {
@@ -45,8 +45,22 @@ export class PlayScreen implements IScreen {
     }
 
     render(renderContext: CanvasRenderingContext2D): void {
+        this.drawFloor(renderContext);
         RenderSystem.render(this._game.state.ecs, renderContext);
         this._ui.frameDone();   
+    }
+
+    private drawFloor(renderContext: CanvasRenderingContext2D) {
+        let image = this._game.images.get("floor1");
+        const viewSize = this._game.view.size
+        const blocksX = viewSize.width / image.width;
+        const blocksY = viewSize.width / image.height;
+
+        for(let x=0; x<blocksX; x++) {
+            for(let y=0; y<blocksY; y++) {
+                renderContext.drawImage(image, x * image.width, y * image.height);
+            }   
+        }
     }
 
     private resetGame() {
