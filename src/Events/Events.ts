@@ -15,7 +15,17 @@ export class DirkHitEventArgs extends EventArguments {
     }
 }
 
+export class DirkDeathEventArgs extends EventArguments {  
+    public readonly dirkHitType: number;  
+    public constructor() {
+        super(Events.DirkHit);
+        this.dirkHitType = randomInt(0, 3);
+    }
+}
+
+
 export enum Events {
     EnemyKilled,
     DirkHit,
+    DirkDeath,
 }

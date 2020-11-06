@@ -66,8 +66,9 @@ export class PlayScreen implements IScreen {
         this._uiInputProvider.hook();
         this.resetGame();
         this._game.messageBus.subscribe(Events.Events.EnemyKilled, () => this.handleEnemyKilled());
+        this._game.messageBus.subscribe(Events.Events.DirkHit, (eventArgs: Events.DirkHitEventArgs) => new Audio("../gfx/hit"+eventArgs.dirkHitType + ".mp3").play());
+        this._game.messageBus.subscribe(Events.Events.DirkDeath, (eventArgs: Events.DirkHitEventArgs) => new Audio("../gfx/dirkdeath"+eventArgs.dirkHitType + ".mp3").play());
         this._activeScenario = new GameStart();
-
     }
 
     onDeactivate(): void {

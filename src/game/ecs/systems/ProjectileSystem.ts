@@ -5,7 +5,7 @@ import { Game } from "../../..";
 import { LivingComponent } from "../components/LivingComponent";
 import { EntityId } from "../EntityComponentSystem";
 import * as CarrierHelper from "./../utilities/CarrierHelper"
-import { Events, EnemyKilledEventArgs } from "../../../Events/Events";
+import { Events, EnemyKilledEventArgs, DirkHitEventArgs, DirkDeathEventArgs } from "../../../Events/Events";
 import { chance } from "../../../utilities/Random";
 import { createShoppingCart } from "../EntityFactory";
 import { EnemyBehaviour } from "../components/EnemyComponent";
@@ -32,6 +32,11 @@ function checkForCollisions(game: Game, projectileComponent: ProjectileComponent
             const projectile = game.state.ecs.components.projectileComponents.get(projectileDimensions.entityId);
             enemyDimensions.hp -= projectile.damage;
             game.state.ecs.components.removeComponentsForEntity(projectileComponent.entityId);
+               
+            if (enemy.behaviour == EnemyBehaviour.Spawner) {
+                game.messageBus.raise(Events.DirkHit, new DirkHitEventArgs());
+            }
+
             if (enemyDimensions.hp <= 0) {
                 game.messageBus.raise(Events.EnemyKilled, new EnemyKilledEventArgs());
                 dropCarriedObject(game, enemy.entityId);
@@ -40,8 +45,10 @@ function checkForCollisions(game: Game, projectileComponent: ProjectileComponent
                 if (chance(15)) {
                     createShoppingCart(game, enemyDimensions.bounds.location);
                 }
-                
-                if (enemy.behaviour == EnemyBehaviour.Normal);
+
+                if (enemy.behaviour == EnemyBehaviour.Spawner) {
+                    game.messageBus.raise(Events.DirkDeath, new DirkDeathEventArgs());
+                }
             }
             break;
         }
