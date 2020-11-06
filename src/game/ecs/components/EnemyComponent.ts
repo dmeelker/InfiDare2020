@@ -17,7 +17,7 @@ export class EnemyComponent extends Component {
     constructor(entityId: EntityId) {
         super(entityId);
 
-        this.baseSpeed = randomInt(25, 85);
+        this.baseSpeed = randomInt(25, 75);
     }
     
     public getSpeed() {
