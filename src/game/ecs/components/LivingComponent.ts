@@ -6,7 +6,7 @@ export class LivingComponent extends DimensionsComponent {
     public hp: number;
 
     constructor(entityId: EntityId, bounds: Rectangle, hp: number) {
-        super(entityId, bounds);
+        super(entityId, bounds, false);
         this.hp = hp;
     }
 }

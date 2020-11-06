@@ -7,7 +7,7 @@ import { LivingComponent } from "../components/LivingComponent";
 import { EntityId } from "../EntityComponentSystem";
 import * as CarrierHelper from "./../utilities/CarrierHelper"
 
-const SPEED: number = 30;
+const SPEED: number = 40;
 
 export function update(game: Game) {
     const enemies = game.state.ecs.components.enemyComponents.all;
@@ -48,7 +48,7 @@ export function update(game: Game) {
 }
 
 function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: DimensionsComponent, targetLocation: Point) {
-    const speed = enemy.state == EnemyState.MovingToPos ? SPEED + 10 : SPEED;
+    const speed = enemy.state == EnemyState.MovingToPos ? SPEED + 15 : SPEED;
     const velocity = targetLocation.subtract(enemyDimensions.centerLocation).toUnit()
         .multiplyScalar(game.time.calculateMovement(speed));
 
@@ -56,7 +56,7 @@ function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: D
         enemyDimensions.move(velocity);
     } else {
         enemy.targetId = null;
-        enemy.targetPos = enemyDimensions.centerLocation.add(new Vector(50 - 100 * Math.random(), 50 - 100 * Math.random()))
+        enemy.targetPos = enemyDimensions.centerLocation.add(new Vector(40 - 80 * Math.random(), 40 - 80 * Math.random()))
         enemy.state = EnemyState.MovingToPos;
     }
 }

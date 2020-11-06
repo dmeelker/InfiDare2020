@@ -30,7 +30,7 @@ export function createEnemy(game: Game, location: Point): EntityId {
 
     const dimensions = new LivingComponent(entityId, new Rectangle(location.x, location.y, image.width, image.height), ENEMY_HEALTH);
     dimensions.hasCollision = false;
-    
+
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.enemyComponents.add(new EnemyComponent(entityId));
