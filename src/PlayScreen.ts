@@ -214,8 +214,8 @@ export class PlayScreen implements IScreen {
 
     private spawnWave() {
         const spawnArea = new Rectangle(
-            this._game.view.size.width - 100, 25,
-            0, this._game.view.size.height - 25
+            this._game.view.size.width - 50, 100,
+            50, this._game.view.size.height - 200
         );
 
         this._waveNumber++;
