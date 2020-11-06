@@ -103,9 +103,11 @@ function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: D
     if (!collisionEntity) {
         enemyDimensions.move(velocity);
     } else {
-        collisionEntity.hitpoints -= enemy.ramForce;
-        if (collisionEntity.hitpoints <= 0) {
-            game.state.ecs.disposeEntity(collisionEntity.entityId);
+        if(collisionEntity.isDestroyable) {
+            collisionEntity.hitpoints -= enemy.ramForce;
+            if (collisionEntity.hitpoints <= 0) {
+                game.state.ecs.disposeEntity(collisionEntity.entityId);
+            }
         }
 
         enemy.targetId = null;

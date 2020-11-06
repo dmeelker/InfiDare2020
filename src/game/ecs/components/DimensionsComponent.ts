@@ -8,13 +8,11 @@ export class DimensionsComponent extends Component {
     private _rotationInDegrees: number = 0;
     private _rotationInRadians: number = 0;
     public hasCollision: boolean;
-    public spawnsZombies: boolean = false;
 
-    constructor(entityId: EntityId, bounds: Rectangle, hasCollision: boolean = true) {
+    constructor(entityId: EntityId, bounds: Rectangle) {
         super(entityId);
         this.bounds = bounds;
         this.center = new Point(bounds.width / 2, bounds.height / 2);
-        this.hasCollision = hasCollision;
     }
 
     public get rotationInDegrees(): number {

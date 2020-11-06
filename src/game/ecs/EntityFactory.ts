@@ -83,7 +83,7 @@ export function createApple(game: Game, location: Point, vector: Vector) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("apple");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), false);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
     dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
@@ -98,7 +98,7 @@ export function createBeerCan(game: Game, location: Point, vector: Vector) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("beercan");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), false);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
     dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
@@ -113,7 +113,7 @@ export function createChicken(game: Game, location: Point, vector: Vector) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("chicken");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), false);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
     dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
@@ -128,7 +128,7 @@ export function createDuck(game: Game, location: Point, vector: Vector) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("ducky");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), false);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
     dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
@@ -142,7 +142,7 @@ export function createBanana(game: Game, location: Point, vector: Vector) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("banana");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), false);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
     dimensions.center = new Point(image.width / 2, image.height / 2);
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
@@ -171,7 +171,7 @@ export function createShoppingCart(game: Game, location: Point) {
     const entityId = game.state.ecs.allocateEntityId();
     const image = game.images.get("shoppingcart");
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height), true);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
@@ -186,7 +186,7 @@ export function createFallingBox(game: Game, location: Point) {
     const image = game.images.get("box");
     const targetLocation = new Point(location.x + (image.width / 2), location.y + (image.height / 2));
 
-    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height), true);
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x, location.y - 100, image.width, image.height));
     dimensions.hasCollision = false;
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
