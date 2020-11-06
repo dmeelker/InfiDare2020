@@ -83,16 +83,11 @@ export class Game {
     }
 
     private async loadImages() {
-        await this.images.load("ship", "gfx/ship.png");
-        await this.images.load("shot", "gfx/shot.png");
-        await this.images.load("explosion", "gfx/explosion.png");
-        await this.images.load("asteroid", "gfx/asteroid.png");
-        await this.images.load("pixelfont-small", "gfx/pixelfont-small.png");
-        await this.images.load("pixelfont-medium", "gfx/pixelfont-medium.png");
+        await this.images.load("player", "gfx/guy.png");
     }
 
     private async setupAnimations() {
-        await this.createAnimationFromImage("explosion", 6, 1, 50);
+        //await this.createAnimationFromImage("explosion", 6, 1, 50);
     }
 
     private async createAnimationFromImage(code: string, horizontalSprites: number, verticalSprites: number, animationSpeed: number) {
@@ -110,7 +105,7 @@ export class Game {
     private intializeScreens() {
         this.introScreen = new IntroScreen(this);
         this.playScreen = new PlayScreen(this);
-        this.screenManager = new ScreenManager(this.introScreen);
+        this.screenManager = new ScreenManager(this.playScreen);
     }
 
     private initializeKeyBindings() {
