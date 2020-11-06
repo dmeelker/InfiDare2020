@@ -27,7 +27,7 @@ export function createApple(game: Game, location: Point, vector: Vector) {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime));
+    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, 1));
 
     return entityId;
 }
@@ -41,7 +41,21 @@ export function createBeerCan(game: Game, location: Point, vector: Vector) {
 
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
-    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime));
+    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, .7));
+
+    return entityId;
+}
+
+export function createChicken(game: Game, location: Point, vector: Vector) {
+    const entityId = game.state.ecs.allocateEntityId();
+    const image = game.images.get("chicken");
+
+    const dimensions = new DimensionsComponent(entityId, new Rectangle(location.x - (image.width / 2), location.y - (image.height / 2), image.width, image.height));
+    dimensions.center = new Point(image.width / 2, image.height / 2);
+
+    game.state.ecs.components.dimensionsComponents.add(dimensions);
+    game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
+    game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, .4));
 
     return entityId;
 }
