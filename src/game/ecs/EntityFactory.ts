@@ -8,6 +8,7 @@ import { CarryableComponent } from "./components/CarryableComponent";
 import { LivingComponent } from "./components/LivingComponent";
 import { EnemyComponent } from "./components/EnemyComponent";
 import { EnemyTargetComponent } from "./components/EnemyTargetComponent";
+import { AudioComponent } from "./components/AudioComponent";
 import { FallingObjectComponent } from "./components/FallingObjectComponent";
 
 const PLAYER_HEALTH: number = 100;
@@ -49,6 +50,7 @@ export function createApple(game: Game, location: Point, vector: Vector) {
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, 1, 1));
+    game.state.ecs.components.audioComponents.add(new AudioComponent(entityId, "gunshot.mp3", false));
 
     return entityId;
 }
@@ -63,6 +65,8 @@ export function createBeerCan(game: Game, location: Point, vector: Vector) {
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, .7, 2));
+    game.state.ecs.components.audioComponents.add(new AudioComponent(entityId, "beer.mp3", false));
+
 
     return entityId;
 }
@@ -77,6 +81,7 @@ export function createChicken(game: Game, location: Point, vector: Vector) {
     game.state.ecs.components.dimensionsComponents.add(dimensions);
     game.state.ecs.components.renderComponents.add(new RenderComponent(entityId, new StaticImageProvider(image)));
     game.state.ecs.components.projectileComponents.add(new ProjectileComponent(entityId, vector, game.time.currentTime, .4, 3));
+    game.state.ecs.components.audioComponents.add(new AudioComponent(entityId, "chicken.mp3", false));
 
     return entityId;
 }
