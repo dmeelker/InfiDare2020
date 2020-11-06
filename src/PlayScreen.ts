@@ -245,10 +245,10 @@ export class PlayScreen implements IScreen {
 
         if (this._waveNumber % 5 == 0) {
             console.log("Hallo!");
-            new Audio("../gfx/dirklaugh.mp3").play();
+            new Audio("gfx/dirklaugh.mp3").play();
             setTimeout(() => {
                 var dirkenterType = randomInt(0,3);
-                new Audio("../gfx/dirkenters"+dirkenterType+".mp3").play();
+                new Audio("gfx/dirkenters"+dirkenterType+".mp3").play();
             }, 3000);
         }
         if (this._waveNumber == 5) {
