@@ -1,12 +1,15 @@
 import {Layer, TiledLevel} from "./TiledLevel";
 import {TileSet} from "./TileSet";
+import {EntityComponentSystem} from "../../game/ecs/EntityComponentSystem";
+import {DimensionsComponent} from "../../game/ecs/components/DimensionsComponent";
+import {Rectangle} from "../Trig";
 
 
 export class Level {
   levels_folder = 'levels/'
   private TiledLevel: TiledLevel;
   private TileSet: TileSet[];
-  private TileIdArray: Uint32Array[] = [];
+  private TileIdMap: Map<string, Uint32Array> = new Map<string, Uint32Array>();
 
   constructor(private canvas: HTMLCanvasElement) {
 
@@ -21,15 +24,37 @@ export class Level {
 
     // read base64 level array
 
-    this.TiledLevel.layers.forEach((_, i) => {
-      console.log(`loaded map, parsing layer: ${i}`);
-      this.parseDataForLayer(i);
+    this.TiledLevel.layers.forEach((layer) => {
+      console.log(`loaded map, parsing layer: ${layer.name}`);
+      this.parseDataForLayer(layer);
     })
-    // draw all the tiles to screen
+  }
 
-    let diffs = this.TileIdArray.filter((v, i, self) => self.indexOf(v) === i);
+  public addWallsAndStatics(layerName: string, ecs: EntityComponentSystem) {
+    if (!this.TileSet) {
+      console.warn('TileSet isn\'t loaded yet...');
+      return false;
+    }
+    const layer = this.TiledLevel.layers.find(l => l.name == layerName);
+    if (!layer) {
+      console.error(`Could not find layer with name: ${layerName}`);
+      return;
+    }
 
-    console.log('map loaded', diffs)
+    this.TileIdMap.get(layer.name).forEach((tile, idx) => {
+      if (tile === 0) {
+        return;
+      }
+
+      let x = (idx % this.TiledLevel.width) * this.TiledLevel.tilewidth;
+      let y = (Math.floor(idx / this.TiledLevel.height)) * this.TiledLevel.tileheight;
+
+      const entityId = ecs.allocateEntityId();
+      let rect = new Rectangle(x, y, this.TiledLevel.tilewidth * 0.75, this.TiledLevel.tileheight * 0.75);
+      let dimensions = new DimensionsComponent(entityId, rect, true);
+      ecs.components.dimensionsComponents.add(dimensions);
+    });
+
   }
 
   public drawMap(canvas: CanvasRenderingContext2D): boolean {
@@ -38,9 +63,9 @@ export class Level {
       return false;
     }
 
-    for (let idx = 0; idx < this.TileIdArray.length; idx++) {
-      for (let i = 0; i < this.TileIdArray[idx].length; i++) {
-        let tileId = this.TileIdArray[idx][i];
+    let keys = this.TileIdMap.forEach((tiles, name) => {
+      for (let i = 0; i < tiles.length; i++) {
+        let tileId = tiles[i];
 
         // Put Default tile here
         if (tileId === 0) {
@@ -68,7 +93,7 @@ export class Level {
             set.tileheight,
             x, y, this.TiledLevel.tilewidth, this.TiledLevel.tileheight);
       }
-    }
+    });
     return true;
   }
 
@@ -96,23 +121,19 @@ export class Level {
     return this.TileSet;
   }
 
-  private parseDataForLayer(idx: number) {
+  private parseDataForLayer(layer: Layer) {
     if (!this.TiledLevel) {
       throw "no level loaded joh!";
     }
 
-    if (!this.TiledLevel.layers[idx] || this.TiledLevel.layers[idx].data.length < 1 ){
+    const raw = window.atob(layer.data);
+    if (!raw || raw.length < 1)
       return;
-    }
-
-    let raw = window.atob(this.TiledLevel.layers[idx].data);
-    if(!raw || raw.length <1 )
-      return;
-    var array = new Uint8Array(new ArrayBuffer(raw.length));
+    const array = new Uint8Array(new ArrayBuffer(raw.length));
     for (let i = 0; i < raw.length; i++) {
       array[i] = raw.charCodeAt(i);
     }
-    this.TileIdArray.push(new Uint32Array(array.buffer));
+    this.TileIdMap.set(layer.name, new Uint32Array(array.buffer));
   }
 
   private async buildTileSetFromXml(tileSetString: string, first_gid: number): Promise<TileSet> {
