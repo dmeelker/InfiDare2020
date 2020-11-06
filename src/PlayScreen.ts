@@ -37,7 +37,6 @@ export class PlayScreen implements IScreen {
     private _playerSpeed = 70;
     private _playerRunSpeed = 130;
     private _fireTimer = new Timer(200);
-    private _waveTimer: Timer;
     private _waveNumber = 1;
     private _state = GameState.Preparing;
     private _stateEnterTime = 0;
@@ -73,16 +72,25 @@ export class PlayScreen implements IScreen {
         AISystem.update(this._game);
         TimedDestroySystem.update(this._game);
         EntityCleanupSystem.update(this._game);
-        this.updateWave(time);
         this._game.state.ecs.removeDisposedEntities();
 
         this.checkPlayerDestroyed();
 
         switch (this._state) {
             case GameState.Preparing:
+                if(time.currentTime - this._stateEnterTime >= this._prepareTime) {
+                    this.spawnWave();
+                    this.switchState(GameState.Defending);
+                }
+                break;
+
             case GameState.Defending:
                 if (this.checkAllTargetsGone()) {
                     this.gameLost();
+                }
+
+                if (this._game.state.ecs.components.enemyComponents.count === 0) {
+                    this.switchState(GameState.Preparing);
                 }
                 break;
 
@@ -91,17 +99,6 @@ export class PlayScreen implements IScreen {
                     this.resetGame();
                 }
                 break;
-        }
-    }
-
-    private updateWave(time: FrameTime) {
-        if (this._game.state.ecs.components.enemyComponents.count === 0) {
-            if (!this._waveTimer) {
-                this._waveTimer = new Timer(5000);
-            } else if (this._waveTimer.update(time.currentTime)) {
-                this.spawnWave();
-                this._waveTimer = null;
-            }
         }
     }
 
@@ -121,8 +118,27 @@ export class PlayScreen implements IScreen {
             DialogSystem.render(this._activeScenario.current(), this._game, renderContext);
         }
 
-        if (this._state == GameState.Lost) {
-            this._activeScenario = new GameOver();
+        switch(this._state) {
+            case GameState.Preparing:
+                const timeLeft = (this._game.time.currentTime - this._stateEnterTime) / this._prepareTime;
+                let message: string = null;
+
+                if(timeLeft > .8) {
+                    message = "Here they come!";
+                } else if(timeLeft > .5) {
+                    message = "Prepare yourself!";
+                } else if(timeLeft < .2) {
+                    message = "You got them all!";
+                }
+
+                if(message) {
+                    this._game.fonts.medium.renderCentered(renderContext, new Point(this._game.view.size.width / 2, this._game.view.size.height / 2), message);
+                }
+                break;
+
+            case GameState.Lost:
+                this._activeScenario = new GameOver();
+                break;
         }
 
         this._ui.frameDone();
