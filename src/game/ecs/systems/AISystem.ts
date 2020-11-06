@@ -52,7 +52,7 @@ export function update(game: Game) {
 }
 
 function moveTowardsTarget(game: Game, enemy: EnemyComponent, enemyDimensions: DimensionsComponent, targetLocation: Point) {
-    const speed = enemy.state == EnemyState.MovingToPos ? SPEED + 15 : SPEED;
+    const speed = enemy.getSpeed();
     const velocity = targetLocation.subtract(enemyDimensions.centerLocation).toUnit()
         .multiplyScalar(game.time.calculateMovement(speed));
 
