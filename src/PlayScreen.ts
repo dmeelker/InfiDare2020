@@ -123,8 +123,25 @@ export class PlayScreen implements IScreen {
         }
     }
 
+    private isAreaClear(area: Rectangle): boolean {
+        for(let barrier of this._game.state.ecs.components.barrierComponents.all) {
+            const dimensions = this._game.state.ecs.components.dimensionsComponents.get(barrier.entityId);
+
+            if(area.overlaps(dimensions.bounds)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private randomLocation(): Point {
-        return new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
+        let location: Point;
+        do {
+            location = new Point(randomInt(0, this._game.view.size.width), randomInt(0, this._game.view.size.height - 50));
+        } while(!this.isAreaClear(new Rectangle(location.x - 20, location.y - 20, 40, 40)));
+
+        return location;
     }
 
     handleEnemyKilled() {
