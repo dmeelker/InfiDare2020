@@ -17,7 +17,8 @@ export class PlayScreen implements IScreen {
     private readonly _game: Game;
     private readonly _ui = new Ui();
     private readonly _uiInputProvider;
-
+    
+    private _pause = false;
     private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
 
@@ -37,6 +38,10 @@ export class PlayScreen implements IScreen {
 
     update(time: FrameTime): void {
         this.handleInput(time);
+
+        if (this._pause) {
+            return;
+        }
 
         ProjectileSystem.update(this._game);
         AISystem.update(this._game);
@@ -93,6 +98,15 @@ export class PlayScreen implements IScreen {
     private handleInput(time: FrameTime) {
         const dimensions = this._game.state.ecs.components.dimensionsComponents.get(this._game.state.playerId);
         let location = dimensions.bounds.location;
+
+        if (this._game.input.wasButtonPressedInFrame(Keys.Pause)) {
+            this._pause = !this._pause;
+        }
+
+        // ignore movement input when the game is paused.
+        if (this._pause) {
+            return;
+        }
 
         if (this._game.input.isButtonDown(Keys.MoveLeft)) {
             location.x -= time.calculateMovement(this._playerSpeed);

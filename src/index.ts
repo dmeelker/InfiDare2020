@@ -123,6 +123,8 @@ export class Game {
         this.input.addKeyboardBinding(Keys.MoveLeft, "KeyA");
         this.input.addKeyboardBinding(Keys.MoveRight, "KeyD");
         this.input.addKeyboardBinding(Keys.Fire, "Space");
+        this.input.addKeyboardBinding(Keys.Pause, "KeyP");
+        this.input.addKeyboardBinding(Keys.Menu, "Escape");
 
         this.input.addGamepadBinding(Keys.MoveUp, 0, 12);
         this.input.addGamepadBinding(Keys.MoveDown, 0, 13);
