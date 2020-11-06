@@ -24,7 +24,7 @@ export class PlayScreen implements IScreen {
     private _pause = false;
     private _playerSpeed = 80;
     private _fireTimer = new Timer(200);
-    private _waveTimer = new Timer(5_000);
+    private _waveTimer: Timer;
     private _waveNumber = 1;
     private _activeDialog = "";
 
@@ -57,8 +57,9 @@ export class PlayScreen implements IScreen {
         this._game.state.ecs.removeDisposedEntities();
 
         if (this._game.state.enemies.length === 0) {
-            if (this._waveTimer.update(time.currentTime)) {
-                this._waveTimer.reset(5_000);
+            if (!this._waveTimer) {
+                this._waveTimer = new Timer(5_000);
+            } else if (this._waveTimer.update(time.currentTime)) {
                 this.spawnWave();
             }
         }
