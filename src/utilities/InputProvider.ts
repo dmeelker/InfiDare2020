@@ -6,7 +6,9 @@ export enum Keys {
     MoveRight,
     MoveUp,
     MoveDown,
-    Fire
+    Fire,
+    Pause,
+    Menu
 }
 
 class GamepadBinding {
