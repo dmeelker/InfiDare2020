@@ -9,7 +9,8 @@ import * as TimedDestroySystem from "./game/ecs/systems/TimedDestroySystem"
 import { Game } from ".";
 import { Keys } from "./utilities/InputProvider";
 import { Point, Vector } from "./utilities/Trig";
-import { createApple, createPlayer } from "./game/ecs/EntityFactory";
+import { createApple, createBeerCan, createPlayer } from "./game/ecs/EntityFactory";
+import { randomArrayElement } from "./utilities/Random";
 
 export class PlayScreen implements IScreen {
     private readonly _game: Game;
@@ -91,7 +92,13 @@ export class PlayScreen implements IScreen {
         if((this._game.input.isButtonDown(Keys.Fire) || this._game.mouse.Button1Down) && this._fireTimer.update(time.currentTime)) {
             let vector = this._game.mouse.Location.toVector().subtract(dimensions.centerLocation.toVector());
             vector = vector.toUnit().multiplyScalar(200);
-            createApple(this._game, dimensions.centerLocation, vector);
+
+            let spawners = [
+                createApple, createBeerCan
+            ];
+
+            var spawner = randomArrayElement(spawners);
+            spawner(this._game, dimensions.centerLocation, vector);
         }
     }
 
