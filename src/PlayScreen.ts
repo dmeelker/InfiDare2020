@@ -166,13 +166,13 @@ export class PlayScreen implements IScreen {
                 }
 
                 if (message) {
-                    this._game.fonts.medium.renderCentered(renderContext, new Point(this._game.view.size.width / 2, this._game.view.size.height / 2), message);
+                    this.drawLabelOverlay(renderContext, message);
                 }
                 break;
 
             case GameState.Defending:
                 if (this._game.time.currentTime - this._stateEnterTime < 2000) {
-                    this._game.fonts.medium.renderCentered(renderContext, new Point(this._game.view.size.width / 2, this._game.view.size.height / 2), `Wave ${this._waveNumber}`);
+                    this.drawLabelOverlay(renderContext, `Wave ${this._waveNumber}`);
                 }
                 break;
 
@@ -184,6 +184,18 @@ export class PlayScreen implements IScreen {
         this._ui.frameDone();
     }
 
+    private drawLabelOverlay(renderContext: CanvasRenderingContext2D, message: string) {
+        const size = this._game.fonts.medium.calculateSize(message);
+        let centerLocation = new Point(this._game.view.size.width / 2, this._game.view.size.height / 2);
+        let location = new Point(
+            Math.round(centerLocation.x - size.width / 2),
+            Math.round(centerLocation.y - size.height / 2));
+
+        renderContext.fillStyle = "#000000AA";
+        renderContext.fillRect(location.x - 5, location.y - 4, size.width + 10, size.height + 8);
+
+        this._game.fonts.medium.render(renderContext, location, message);
+    }
 
     private resetGame() {
         let gameState = this._game.state;
