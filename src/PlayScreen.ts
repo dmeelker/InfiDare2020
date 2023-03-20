@@ -49,7 +49,7 @@ export class PlayScreen implements IScreen {
     private _playerSpeed = 70;
     private _playerRunSpeed = 130;
     private _fireTimer = new Timer(200);
-    private _waveNumber = 4;
+    private _waveNumber = 0;
     private _state = GameState.Preparing;
     private _stateEnterTime = 0;
     private _prepareTime = 10000;
@@ -66,8 +66,8 @@ export class PlayScreen implements IScreen {
         this._uiInputProvider.hook();
         this.resetGame();
         this._game.messageBus.subscribe(Events.Events.EnemyKilled, () => this.handleEnemyKilled());
-        this._game.messageBus.subscribe(Events.Events.DirkHit, (eventArgs: Events.DirkHitEventArgs) => new Audio("gfx/hit"+eventArgs.dirkHitType + ".mp3").play());
-        this._game.messageBus.subscribe(Events.Events.DirkDeath, (eventArgs: Events.DirkHitEventArgs) => new Audio("gfx/dirkdeath"+eventArgs.dirkHitType + ".mp3").play());
+        this._game.messageBus.subscribe(Events.Events.DirkHit, (eventArgs: Events.DirkHitEventArgs) => new Audio("gfx/hit" + eventArgs.dirkHitType + ".mp3").play());
+        this._game.messageBus.subscribe(Events.Events.DirkDeath, (eventArgs: Events.DirkHitEventArgs) => new Audio("gfx/dirkdeath" + eventArgs.dirkHitType + ".mp3").play());
         this._activeScenario = new GameStart();
     }
 
@@ -247,8 +247,8 @@ export class PlayScreen implements IScreen {
             console.log("Hallo!");
             new Audio("gfx/dirklaugh.mp3").play();
             setTimeout(() => {
-                var dirkenterType = randomInt(0,3);
-                new Audio("gfx/dirkenters"+dirkenterType+".mp3").play();
+                var dirkenterType = randomInt(0, 3);
+                new Audio("gfx/dirkenters" + dirkenterType + ".mp3").play();
             }, 3000);
         }
         if (this._waveNumber == 5) {
